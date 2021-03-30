@@ -16,7 +16,7 @@ class Staff(UserProfile):
     role = models.CharField(max_length = 128)
 
     class Meta:
-        verbose_name_plural = "categories"
+        verbose_name_plural = "staff"
 
 class Student(UserProfile):
     courses = models.CharField(max_length = 256)
