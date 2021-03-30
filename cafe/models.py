@@ -22,38 +22,11 @@ class Student(UserProfile):
     courses = models.CharField(max_length = 256)
     lab_groups = models.CharField(max_length = 256)
 
-# Issues and Responses
-class Issue(models.Model):
-    id = models.IntegerField(primary_key=True)
-    date = models.DateField()
-    # Can also use TextField, but then length cannot be limited if I understand 
-    # correctly
-    content = models.CharField(max_length = 1024)
-    poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
-    anonymous = models.BooleanField()
-    #TODO: Figure out what status corresponds to what
-    status = models.IntegerField()
-
-    def __str__(self):
-        return self.id
-
-class Response(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
-    number = models.IntegerField()
-    date = models.DateField()
-    content = models.CharField(max_length = 1024)
-    # If the User who posted the response is delete, keep the response
-    poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
-
-    def __str__(self):
-        return self.issue.id + "." + self.number
-
 # Categories
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
     slug = models.SlugField(unique=True)
     staff_resp = models.ManyToManyField(Staff)
-    issues = models.ManyToManyField(Issue, blank=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -70,3 +43,31 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+# Issues and Responses
+class Issue(models.Model):
+    id = models.IntegerField(primary_key=True)
+    date = models.DateField()
+    #
+    categories = models.ManyToManyField(Category)
+    # Can also use TextField, but then length cannot be limited if I understand 
+    # correctly
+    content = models.CharField(max_length = 1024)
+    poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+    anonymous = models.BooleanField()
+    #TODO: Figure out what status corresponds to what
+    status = models.IntegerField()
+
+    def __str__(self):
+        return str(self.id)
+
+class Response(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
+    number = models.IntegerField()
+    date = models.DateField()
+    content = models.CharField(max_length = 1024)
+    # If the User who posted the response is delete, keep the response
+    poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.issue.id) + "." + str(self.number)
