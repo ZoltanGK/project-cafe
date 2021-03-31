@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>
+        Cafe -
+        {% block title_block %}
+            placeholder
+        {% endblock %}
+    </title>
+</head>
+<body>
+	<div>
+		<p><img style = "float : left;" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" /><img style="float : right ;" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" /></p> 
+		<p><h1 style = "text-align: center;">Central Anonymous Feedback Environment</h1>
+			<h3 style = "text-align: center;">(CAFE)</h3></h></p>
+
+	</div>
+	<hr/>
+        {% block body_block %}
+        {% endblock %}
+	<br/>
+	<hr/>
+	<div>
+		Site created by Group 13B <a href ='#'>Contact us</a>
+	</div>
+</body>
+</html>

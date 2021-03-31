@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Index</title>
-</head>
-<body>
-	<h1>This is the index page.</h1>
-	{% if user.is_authenticated %}
-	<h2>Your name is: {{ user.username }}</h2>
-	{% else %}
-	<h2>You are not logged in.</h2>
-	{% endif %}
-</body>
-</html>
+{% extends 'cafe/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	Homepage
+{% endblock %}
+
+{% block body_block %}
+	<article>
+		<h2>About this Website</h2>
+		<p>This website allows students to submit issues they have have throughout their degree to the appropriate univeristy staff, who are then able to submit replies to the issues which the individual students are able to have access to. In order to use our website, you must create an account and wait for our administration team to give you access to the appropriate pages.</p>
+	</article>
+	<a style = "text-align: right ; float: right ; " href='#'> Log In </a>
+	<a style = "text-align: right; float : right ; padding-right: 30px ; " href='#'> Sign Up </a> 
+{% endblock %} 

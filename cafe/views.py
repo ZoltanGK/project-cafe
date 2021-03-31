@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 
 def index(request):
 	return render(request, 'cafe/index.html')
+
+def wait(request):
+	return render(request, 'cafe/wait.html')
 
 def register(request):
 	if request.method == 'POST':
