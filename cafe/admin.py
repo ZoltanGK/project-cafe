@@ -2,14 +2,23 @@ from django.contrib import admin
 from django.contrib.auth.models import Permission
 from cafe.models import Category, UserProfile, Staff, Student, Issue, Response, Contact
 
+def user(obj):
+    return obj.user
+
+def name(obj):
+    return UserProfile.objects.get(user = obj.user).name
+
+def email(obj):
+    return UserProfile.objects.get(user = obj.user).email
+
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "name", "email")
 
 class StaffAdmin(admin.ModelAdmin):
-    list_display = ("user", "name", "email", "role")
+    list_display = (user, name, "role", email)
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ("user", "name", "courses", "lab_groups")
+    list_display = (user, name, "courses", "lab_groups", email)
 
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}

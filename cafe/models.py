@@ -12,15 +12,23 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-class Staff(UserProfile):
+class Staff(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length = 128)
 
     class Meta:
         verbose_name_plural = "staff"
+    
+    def __str__(self):
+        return self.user.username
 
-class Student(UserProfile):
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     courses = models.CharField(max_length = 256)
     lab_groups = models.CharField(max_length = 256)
+
+    def __str__(self):
+        return self.user.username
 
 # Categories
 class Category(models.Model):
@@ -48,7 +56,6 @@ class Category(models.Model):
 class Issue(models.Model):
     id = models.IntegerField(primary_key=True)
     date = models.DateField()
-    #
     categories = models.ManyToManyField(Category)
     # Can also use TextField, but then length cannot be limited if I understand 
     # correctly
