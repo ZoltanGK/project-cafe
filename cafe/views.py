@@ -36,7 +36,7 @@ def contact(request):
 
 		if form.is_valid():
 			form.save(commit=True)
-			return redirect('')
+			return redirect('index')
 		else:
 			print(form.errors)
 	return render(request, 'cafe/contact.html', {'form' : form})
