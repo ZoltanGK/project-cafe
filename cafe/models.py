@@ -35,6 +35,12 @@ class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        verbose_name_plural = "categories"
+
+    def __str__(self):
+        return self.name
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         # The below code should create a new responsibility permission for each category upon saving
@@ -44,12 +50,9 @@ class Category(models.Model):
                                 name=f'Responsible for {self.name}',
                                 content_type=content_type,)
         super(Category, self).save(*args, **kwargs)
-
-    class Meta:
-        verbose_name_plural = "categories"
-
-    def __str__(self):
-        return self.name
+    
+    def issues(self):
+        return [i for i in Issue.objects.filter(categories__id = self.id)]
 
 # Issues and Responses
 class Issue(models.Model):
@@ -65,6 +68,10 @@ class Issue(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    def in_categories(self):
+        cats = [str(i) for i in self.categories.all()]
+        return "\n".join(cats)
 
 class Response(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE)

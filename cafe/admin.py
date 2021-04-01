@@ -21,10 +21,11 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = (user, name, "courses", "lab_groups", email)
 
 class CategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
+    prepopulated_fields = {'slug': ('name',),}
+    list_display = ("name", "issues")
 
 class IssueAdmin(admin.ModelAdmin):
-    list_display = ("id", "poster", "status", "date", "content")
+    list_display = ("id", "in_categories", "poster", "status", "date", "content")
 
 class ResponseAdmin(admin.ModelAdmin):
     list_display = ("issue", "number", "poster", "date", "content")
