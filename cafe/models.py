@@ -71,3 +71,11 @@ class Response(models.Model):
 
     def __str__(self):
         return str(self.issue.id) + "." + str(self.number)
+    
+class Contact(models.Model):
+    date = models.DateField()
+    name = models.CharField(max_length = 64, default = 'Anonymous')
+    issue = models.CharField(max_length = 1024)
+
+    def __str__(self):
+        return self.issue

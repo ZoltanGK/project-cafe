@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
+from cafe.forms import ContactForm
 
 def index(request):
 	return render(request, 'cafe/index.html')
@@ -26,3 +27,16 @@ def register(request):
 
 	context = {'form' : form}
 	return render(request, 'registration/register.html', context)
+
+def contact(request):
+	form = ContactForm()
+	
+	if request.method =='POST':
+		form = ContactForm(request.POST)
+
+		if form.is_valid():
+			form.save(commit=True)
+			return redirect('')
+		else:
+			print(form.errors)
+	return render(request, 'cafe/contact.html', {'form' : form})
