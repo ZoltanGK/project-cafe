@@ -6,4 +6,9 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('wait/', views.wait, name="wait"),
     path('contact/', views.contact, name="contact"),
+    path('login/', views.login, name='login'),
+    path('login/student-account', views.student_account, name='student_account'),
+    path('login/student-account/view-queries', views.view_queries, name='view_queries'),
+    path('login/staff-account', views.staff_account, name='staff_account'),
+    path('login/staff-account/create-response', views.create_response, name='create_response'),
 ]
