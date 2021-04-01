@@ -59,9 +59,9 @@ class Issue(models.Model):
     # correctly
     content = models.CharField(max_length = 1024)
     poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
-    anonymous = models.BooleanField()
+    anonymous = models.BooleanField(default=True)
     #TODO: Figure out what status corresponds to what
-    status = models.IntegerField()
+    status = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.id)
