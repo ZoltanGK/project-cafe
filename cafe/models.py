@@ -54,7 +54,7 @@ class Category(models.Model):
 # Issues and Responses
 class Issue(models.Model):
     id = models.IntegerField(primary_key=True)
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True)
     categories = models.ManyToManyField(Category)
     # Can also use TextField, but then length cannot be limited if I understand 
     # correctly
@@ -70,7 +70,7 @@ class Issue(models.Model):
 class Response(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
     number = models.IntegerField()
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True)
     content = models.CharField(max_length = 1024)
     # If the User who posted the response is delete, keep the response
     poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
@@ -79,7 +79,7 @@ class Response(models.Model):
         return str(self.issue.id) + "." + str(self.number)
     
 class Contact(models.Model):
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True)
     name = models.CharField(max_length = 64, default = 'Anonymous')
     issue = models.CharField(max_length = 1024)
 
