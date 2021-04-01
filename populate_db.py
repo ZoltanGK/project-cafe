@@ -74,7 +74,7 @@ def populate():
                "poster": "ay", 
                "anonymous": False, 
                "status": 0, 
-               "content": "CS1P needs more Cooper! - Anon Ymous. Should have status 9."}, 
+               "content": "CS1P needs more Cooper! - Anon Ymous. Should have status 0."}, 
               {"categories": ["Online Learning Feedback"], 
                "poster": "zgk", 
                "anonymous": False, 
