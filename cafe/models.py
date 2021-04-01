@@ -34,7 +34,6 @@ class Student(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
     slug = models.SlugField(unique=True)
-    staff_resp = models.ManyToManyField(Staff)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
