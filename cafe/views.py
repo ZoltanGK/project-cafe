@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login
 from cafe.forms import ContactForm
 from django.conf import settings
 from django.contrib import messages
+from django.urls import reverse
 
 def index(request):
 	return render(request, 'cafe/index.html')
@@ -19,6 +20,7 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
+            # Checks to see if captcha was passed
             recaptcha_response = request.POST.get('g-recaptcha-response')
             url = 'https://www.google.com/recaptcha/api/siteverify'
             cap_secret="6LfOhpkaAAAAABVLBsLiHM2j8mak-1fQrqz-spSY"
@@ -29,42 +31,20 @@ def register(request):
             cap_server_response=requests.post(url= url, data=values)
             cap_json=json.loads(cap_server_response.text)
 
+            # If the captcha is passed and the fields are filled out correctly:
+            # create a new user, login and go to the home page.
             if cap_json['success']:
                 form.save()
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password1']
                 user = authenticate(username=username, password=password)
                 login(request, user)
-                messages.success(request, 'New comment added with success!')
                 return redirect('index')
             else:
+                # If the captcha is failed redirect back to register page
+                # so the user can try again.
                 messages.error(request, 'Invalid reCAPTCHA. Please try again.')
                 return redirect('/register')
-
-
-            #data = urllib.parse.urlencode(values).encode()
-            #req =  urllib.request.Request(url, data=data)
-            #response = urllib.request.urlopen(req)
-            #result = json.loads(response.read().decode())
-
-            #print(result)
-
-            #if result['success']:
-                #form.save()
-                #username = form.cleaned_data['username']
-                #password = form.cleaned_data['password1']
-                #user = authenticate(username=username, password=password)
-                #login(request, user)
-                #messages.success(request, 'New comment added with success!')
-            #else:
-                #messages.error(request, 'Invalid reCAPTCHA. Please try again.')
-            #return redirect('index')
-			#form.save()
-			#username = form.cleaned_data['username']
-			#password = form.cleaned_data['password1']
-			#user = authenticate(username=username, password=password)
-			#login(request, user)
-			#return redirect('index')
     else:
         form = UserCreationForm()
     context = {'form' : form}
@@ -130,4 +110,34 @@ def create_response(request):
     # get all issues for that staff in the same format as the dictionary from view_queries view
     context_dict = {}
     return render(request, 'cafe/create_response.html', context_dict)
+
+def doLogin(request):
+    if request.method=="POST":
+        # Checks to see if captcha was passed
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        url = 'https://www.google.com/recaptcha/api/siteverify'
+        cap_secret="6LfOhpkaAAAAABVLBsLiHM2j8mak-1fQrqz-spSY"
+        values = {
+            'secret': cap_secret,
+            'response': recaptcha_response
+            }
+        cap_server_response=requests.post(url= url, data=values)
+        cap_json=json.loads(cap_server_response.text)
+
+        # If the captcha is passed and the fields are filled out correctly:
+        # login and go to the home page.
+        if cap_json['success']==True:
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('index')
+        else:
+            # If the captcha is failed redirect back to login page
+            # so the user can try again.
+            messages.error(request,"Invalid Captcha Try Again")
+            return redirect("/doLogin")
+    else:
+        messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+        return redirect('/accounts/login/')
         
