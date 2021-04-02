@@ -124,3 +124,14 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR, ]
 
 LOGIN_REDIRECT_URL = '/'
+
+GOOGLE_RECAPTCHA_SECRET_KEY = '6LfOhpkaAAAAABVLBsLiHM2j8mak-1fQrqz-spSY'
+
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}

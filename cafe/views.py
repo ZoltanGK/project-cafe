@@ -1,7 +1,13 @@
+import urllib
+import json
+
+import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from cafe.forms import ContactForm
+from django.conf import settings
+from django.contrib import messages
 
 def index(request):
 	return render(request, 'cafe/index.html')
@@ -10,23 +16,59 @@ def wait(request):
 	return render(request, 'cafe/wait.html')
 
 def register(request):
-	if request.method == 'POST':
-		form = UserCreationForm(request.POST)
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            url = 'https://www.google.com/recaptcha/api/siteverify'
+            cap_secret="6LfOhpkaAAAAABVLBsLiHM2j8mak-1fQrqz-spSY"
+            values = {
+                'secret': cap_secret,
+                'response': recaptcha_response
+                }
+            cap_server_response=requests.post(url= url, data=values)
+            cap_json=json.loads(cap_server_response.text)
 
-		if form.is_valid():
-			form.save()
-			username = form.cleaned_data['username']
-			password = form.cleaned_data['password1']
-			user = authenticate(username=username, password=password)
-			login(request, user)
-			return redirect('index')
-	else:
-		form = UserCreationForm()
+            if cap_json['success']:
+                form.save()
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']
+                user = authenticate(username=username, password=password)
+                login(request, user)
+                messages.success(request, 'New comment added with success!')
+                return redirect('index')
+            else:
+                messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+                return redirect('/register')
 
 
+            #data = urllib.parse.urlencode(values).encode()
+            #req =  urllib.request.Request(url, data=data)
+            #response = urllib.request.urlopen(req)
+            #result = json.loads(response.read().decode())
 
-	context = {'form' : form}
-	return render(request, 'registration/register.html', context)
+            #print(result)
+
+            #if result['success']:
+                #form.save()
+                #username = form.cleaned_data['username']
+                #password = form.cleaned_data['password1']
+                #user = authenticate(username=username, password=password)
+                #login(request, user)
+                #messages.success(request, 'New comment added with success!')
+            #else:
+                #messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+            #return redirect('index')
+			#form.save()
+			#username = form.cleaned_data['username']
+			#password = form.cleaned_data['password1']
+			#user = authenticate(username=username, password=password)
+			#login(request, user)
+			#return redirect('index')
+    else:
+        form = UserCreationForm()
+    context = {'form' : form}
+    return render(request, 'registration/register.html', context)
 
 def contact(request):
 	form = ContactForm()
