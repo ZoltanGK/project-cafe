@@ -22,6 +22,13 @@ class Staff(models.Model):
     def __str__(self):
         return self.user.username
 
+    def get_cats_resp(self):
+        cats = []
+        for c in Category.objects.all():
+            if self.has_perm(f"cafe.resp-for-{c.slug}"):
+                cats.append(c)
+        return cats
+
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     courses = models.CharField(max_length = 256)
