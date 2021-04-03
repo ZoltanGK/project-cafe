@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Register</title>
-</head>
-<body>
+{% extends 'cafe/base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block title_block %}
+	Register
+{% endblock %}
+
+{% block body_block %}
 	<script src='https://www.google.com/recaptcha/api.js'></script>
 	<h1>Registration Page</h1>
 	<form method="post" action="{% url 'register' %}">
@@ -26,10 +28,9 @@
     		{{error}}
 		{% endfor %}
 
-		{{ form }}
+		{{ form|crispy }}
 		<div class="g-recaptcha" data-sitekey="6LfOhpkaAAAAAOQj9BENiJl8Cxzl52ohZ8k_qXpd"></div>
 
 		<input type="submit" value="Register">
 	</form>
-</body>
-</html>
+{% endblock %}

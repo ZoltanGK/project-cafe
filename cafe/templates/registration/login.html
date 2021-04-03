@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Login</title>
-</head>
-<body>
+{% extends 'cafe/base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block title_block %}	
+	Login
+{% endblock %}
+
+{% block body_block %}
 	<script src='https://www.google.com/recaptcha/api.js'></script>
 	{% if form.errors %}
 	<p>Please enter the correct username and password for your account. Note that both fields may be case-sensitive and the captcha must be completed.</p>
@@ -16,14 +18,13 @@
 
 	<form method="post" action="/doLogin">
 		{% csrf_token %}
-
+		
 		<p>Username: {{ form.username }}</p>
 		<p>Password: {{ form.password }}</p>
 
 		<div class="g-recaptcha" data-sitekey="6LfOhpkaAAAAAOQj9BENiJl8Cxzl52ohZ8k_qXpd"></div>
 
-		<p><input type="submit" = value="login"></p>
+		<p><input type="submit" = value="Log In"></p>
 		<input type="hidden" name="next" value="{{ next }}">
 	</form>
-</body>
-</html>
+{% endblock %}
