@@ -25,7 +25,7 @@ class Staff(models.Model):
     def get_cats_resp(self):
         cats = []
         for c in Category.objects.all():
-            if self.has_perm(f"cafe.resp-for-{c.slug}"):
+            if self.user.has_perm(f"cafe.resp-for-{c.slug}"):
                 cats.append(c)
         return cats
 
