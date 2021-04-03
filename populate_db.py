@@ -47,6 +47,13 @@ def populate():
                         "student": True,
                         "courses": "COMPSCI1001, COMPSCI1018, COMPSCI1006",
                         "lab_groups": "LB15, LB01, LB06"},
+            "nouser":  {"name": "Not a User", 
+                        "email": "notAuser@example.gla.ac.uk",
+                        "staff": False, 
+                        "role": "",
+                        "student": False,
+                        "courses": "",
+                        "lab_groups": ""},
 
     }
     # Key = Category Name, Value = List of responsible staff
