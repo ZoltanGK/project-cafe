@@ -9,6 +9,7 @@ from cafe.forms import ContactForm
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
+from cafe.models import Student, Staff, Issue, Response
 
 def index(request):
 	return render(request, 'cafe/index.html')
@@ -82,7 +83,24 @@ def view_queries(request):
         #create the new reply
     # get all issues for that student 
     # get all responses for each issue
-    context_dict = {}
+    context_dict = get_context_dict_student(request)
+    return render(request, 'cafe/view_queries.html', context_dict)
+    
+
+def staff_account(request):
+    context_dict = get_context_dict_staff(request)
+    return render(request, 'cafe/staff_account.html', context_dict)
+    
+def create_response(request):
+    if request.method == 'POST':
+        pass
+        #the staff is replying to an issue
+        #create the new reply
+    context_dict = get_context_dict_staff(request)
+    return render(request, 'cafe/create_response.html', context_dict)
+    
+#helper fn to get the context dict for student views
+def get_context_dict_student(request):
     #context_dict is a dictionary of all issues and replies of the format: 
     # {'issue id':{'title': title, 
     #               'date': date, 
@@ -93,23 +111,67 @@ def view_queries(request):
     #               'status' : status,
     #               'responses':[{'number': number, 'date':date, 'content':content, 'poster': poster}]
     #               }
-    return render(request, 'cafe/view_queries.html', context_dict)
-    
-
-def staff_account(request):
-    # get all issues for that staff in the same format as the dictionary from view_queries view
+    user = request.user
+    user_student = Student.objects.get(user=user)
+    issues = Issue.objects.filter(poster = user_student)
     context_dict = {}
-
-    return render(request, 'cafe/staff_account.html', context_dict)
-    
-def create_response(request):
-    if request.method == 'POST':
-        pass
-        #the staff is replying to an issue
-        #create the new reply
-    # get all issues for that staff in the same format as the dictionary from view_queries view
+    for issue in issues:
+        categories = []
+        responses = []
+        for category in issue.categories.all():
+            categories.append(category.name)
+        for response in Response.objects.filter(issue = issue).order_by('number'):
+            dict_response = {'number' : response.number, 'date': response.date, 'content': response.content, 'poster': response.poster}
+            responses.append(dict_response)
+        context_dict[issue.id] = { 
+                    'title': issue.title,
+                    'date': issue.date, 
+                    'anonymous': issue.anonymous, 
+                    'poster': issue.poster,
+                    'content': issue.content,
+                    'categories' : categories,
+                    'status' : status,
+                    'responses':responses
+                    }
+    #print(context_dict)
+    return context_dict
+ 
+#helper fn to get the context dict for staff views 
+def get_context_dict_staff(request):
+    #context_dict format is the same as for students:    
+    user = request.user
+    user_staff = Staff.objects.get(user=user)
+    #categories assigned to that user
+    user_categories = user_staff.get_cats_resp()
+    issues = []
+    for category in user_categories:
+        # get all issues for that category
+        cat_issues = Issue.objects.filter(category)
+        # this is to prevent duplicates in the issues list
+        for cat_issue in cat_issues:
+            if cat_issue not in issues:
+                issues.append(cat_issue)
+        
     context_dict = {}
-    return render(request, 'cafe/create_response.html', context_dict)
+    for issue in issues:
+        categories = []
+        responses = []
+        for category in issue.categories.all():
+            categories.append(category.name)
+        for response in Response.objects.filter(issue = issue).order_by('number'):
+            dict_response = {'number' : response.number, 'date': response.date, 'content': response.content, 'poster': response.poster}
+            responses.append(dict_response)
+        context_dict[issue.id] = { 
+                    'title': issue.title,
+                    'date': issue.date, 
+                    'anonymous': issue.anonymous, 
+                    'poster': issue.poster,
+                    'content': issue.content,
+                    'categories' : categories,
+                    'status' : status,
+                    'responses':responses
+                    }
+    return context_dict
 
 def doLogin(request):
     if request.method=="POST":
