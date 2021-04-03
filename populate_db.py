@@ -66,31 +66,37 @@ def populate():
                "poster": "zgk", 
                "anonymous": True, 
                "status": 1, 
+               "title": "Test Issue 1",
                "content": "This is test issue 1. Status 1, Anonymous."},
               {"categories": ["Test Category", "Online Learning Feedback"], 
                "poster": "zgk", 
                "anonymous": False, 
                "status": 0, 
+               "title": "Test Issue 2",
                "content": "This is test issue 2. Status 0, Not Anonymous."}, 
               {"categories": ["CS1P Feedback", "Test Category"], 
                "poster": "ay", 
                "anonymous": True, 
                "status": 2, 
+               "title": "Anonymous More Cooper",
                "content": "CS1P needs more Cooper! - Anonymous. Should have status 2."}, 
               {"categories": ["CS1P Feedback", "Test Category"], 
                "poster": "ay", 
                "anonymous": False, 
                "status": 0, 
+               "title": "Named More Cooper",
                "content": "CS1P needs more Cooper! - Anon Ymous. Should have status 0."}, 
               {"categories": ["Online Learning Feedback"], 
                "poster": "zgk", 
                "anonymous": False, 
                "status": 0, 
+               "title": "Test Issue for Online Learning Feedback", 
                "content": "This is a test issue that should only be seen by mef (and admin accs)."}, 
               {"categories": ["General Tutor Feedback", "CS1P Feedback"], 
                "poster": "zgk", 
                "anonymous": False, 
                "status": 0, 
+               "title": "Test Issue with HTML/JS in it", 
                "content": """I've really run out of ideas here, just adding content so that categories aren't empty.
                              Please make sure this doesn't have display issues with all the writing. \n\n\t
                              Also the following code should just be plain text. It should NOT actually work:
@@ -150,7 +156,7 @@ def add_category(name, resp_staff):
         user.save()
     return cat
 
-def add_issue(categories, poster, anonymous, status, content):
+def add_issue(categories, poster, anonymous, status, title, content):
     issue = Issue.objects.get_or_create(content = content)[0]
     for cat in categories:
         c = Category.objects.get(name=cat)
@@ -158,6 +164,7 @@ def add_issue(categories, poster, anonymous, status, content):
     issue.poster = UserProfile.objects.get(user = User.objects.get(username = poster))
     issue.anonymous = anonymous
     issue.status = status
+    issue.title = title
     issue.save()
     return issue
 

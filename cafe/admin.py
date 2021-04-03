@@ -25,7 +25,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "issues")
 
 class IssueAdmin(admin.ModelAdmin):
-    list_display = ("id", "in_categories", "poster", "status", "date", "content")
+    list_display = ("id", "title", "in_categories", "poster", "status", "date", "content")
 
 class ResponseAdmin(admin.ModelAdmin):
     list_display = ("issue", "number", "poster", "date", "content")

@@ -67,6 +67,7 @@ class Issue(models.Model):
     categories = models.ManyToManyField(Category)
     # Can also use TextField, but then length cannot be limited if I understand 
     # correctly
+    title = models.CharField(max_length = 64)
     content = models.CharField(max_length = 1024)
     poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
     anonymous = models.BooleanField(default=True)
