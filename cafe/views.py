@@ -3,7 +3,7 @@ import json
 
 import requests
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+from .forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from cafe.forms import ContactForm
 from django.conf import settings
@@ -20,6 +20,7 @@ def wait(request):
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
+        print(form.is_valid())
         if form.is_valid():
             # Checks to see if captcha was passed
             recaptcha_response = request.POST.get('g-recaptcha-response')
@@ -38,7 +39,8 @@ def register(request):
                 form.save()
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password1']
-                user = authenticate(username=username, password=password)
+                email = form.cleaned_data['email']
+                user = authenticate(username=username, password=password, email=email)
                 login(request, user)
                 return redirect('index')
             else:
