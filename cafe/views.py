@@ -131,9 +131,9 @@ def get_context_dict_student(request):
                     'anonymous': issue.anonymous, 
                     'poster': issue.poster,
                     'content': issue.content,
-                    'categories' : categories,
-                    'status' : status,
-                    'responses':responses
+                    'categories' : issue.in_categories(),
+                    'status' : issue.status,
+                    'responses': issue.responses
                     }
     #print(context_dict)
     return context_dict
@@ -148,7 +148,7 @@ def get_context_dict_staff(request):
     issues = []
     for category in user_categories:
         # get all issues for that category
-        cat_issues = Issue.objects.filter(category)
+        cat_issues = category.issues
         # this is to prevent duplicates in the issues list
         for cat_issue in cat_issues:
             if cat_issue not in issues:
@@ -169,9 +169,9 @@ def get_context_dict_staff(request):
                     'anonymous': issue.anonymous, 
                     'poster': issue.poster,
                     'content': issue.content,
-                    'categories' : categories,
-                    'status' : status,
-                    'responses':responses
+                    'categories' : issue.in_categories,
+                    'status' : issue.status,
+                    'responses': issue.responses
                     }
     return context_dict
 
