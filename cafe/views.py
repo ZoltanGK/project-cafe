@@ -42,7 +42,7 @@ def register(request):
                 email = form.cleaned_data['email']
                 user = authenticate(username=username, password=password, email=email)
                 login(request, user)
-                return redirect('index')
+                return redirect('/wait')
             else:
                 # If the captcha is failed redirect back to register page
                 # so the user can try again.
@@ -203,7 +203,7 @@ def doLogin(request):
             password = request.POST.get("password")
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('index')
+            return redirect('/wait')
         else:
             # If the captcha is failed redirect back to login page
             # so the user can try again.
