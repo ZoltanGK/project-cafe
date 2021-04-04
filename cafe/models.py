@@ -12,6 +12,12 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+    def is_student(self):
+        isStudent = False
+        if self.user("staff")==True:
+            isStudent = True
+        return isStudent
+
 class Staff(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length = 128)

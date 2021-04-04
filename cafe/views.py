@@ -207,7 +207,12 @@ def doLogin(request):
             password = request.POST.get("password")
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('/wait')
+            if Staff.objects.filter(user = user):
+                return redirect('staff_account')
+            elif Student.objects.filter(user = user):
+                return redirect('student_account')
+            else:
+                return redirect('wait')
         else:
             # If the captcha is failed redirect back to login page
             # so the user can try again.
