@@ -9,7 +9,7 @@ from cafe.forms import ContactForm, IssueForm
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
-from cafe.models import Student, Staff, Issue, Response
+from cafe.models import Student, Staff, Issue, Response, UserProfile
 from django.template import RequestContext
 
 def index(request):
@@ -132,19 +132,19 @@ def get_context_dict_student(request):
         for category in issue.categories.all():
             categories.append(category.name)
         for response in Response.objects.filter(issue = issue).order_by('number'):
-            dict_response = {'number' : response.number, 'date': response.date, 'content': response.content, 'poster': response.poster}
-            responses.append(dict_response)
+            response_poster = UserProfile.objects.get(user = response.poster.user).name
+            dict_response = {'number' : response.number, 'date': response.date, 'content': response.content, 'poster': response_poster}
+            responses.append(dict(dict_response))
         context_dict[issue.id] = { 
                     'title': issue.title,
                     'date': issue.date, 
                     'anonymous': issue.anonymous, 
-                    'poster': issue.poster,
+                    'poster': UserProfile.objects.get(user = user).name,
                     'content': issue.content,
                     'categories' : issue.in_categories(),
                     'status' : issue.status,
-                    'responses': issue.responses
+                    'responses': responses
                     }
-    #print(context_dict)
     return context_dict
  
 #helper fn to get the context dict for staff views 
@@ -165,23 +165,26 @@ def get_context_dict_staff(request):
         
     context_dict = {}
     for issue in issues:
+        issue_poster = UserProfile.objects.get(user = issue.poster.user).name
         categories = []
         responses = []
         for category in issue.categories.all():
             categories.append(category.name)
         for response in Response.objects.filter(issue = issue).order_by('number'):
-            dict_response = {'number' : response.number, 'date': response.date, 'content': response.content, 'poster': response.poster}
-            responses.append(dict_response)
+            response_poster = UserProfile.objects.get(user = response.poster.user).name
+            dict_response = {'number' : response.number, 'date': response.date, 'content': response.content, 'poster': response_poster}
+            responses.append(dict(dict_response))
         context_dict[issue.id] = { 
                     'title': issue.title,
                     'date': issue.date, 
                     'anonymous': issue.anonymous, 
-                    'poster': issue.poster,
+                    'poster': issue_poster,
                     'content': issue.content,
                     'categories' : issue.in_categories,
                     'status' : issue.status,
-                    'responses': issue.responses
+                    'responses': responses
                     }
+    print(context_dict)
     return context_dict
 
 def doLogin(request):
