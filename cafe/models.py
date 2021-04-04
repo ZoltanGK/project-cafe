@@ -70,7 +70,7 @@ class Issue(models.Model):
     # correctly
     title = models.CharField(max_length = 64)
     content = models.CharField(max_length = 1024)
-    poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+    poster = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True)
     anonymous = models.BooleanField(default=True)
     #TODO: Figure out what status corresponds to what
     status = models.IntegerField(default=0)
