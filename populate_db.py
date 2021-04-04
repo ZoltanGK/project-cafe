@@ -161,7 +161,7 @@ def add_issue(categories, poster, anonymous, status, title, content):
     for cat in categories:
         c = Category.objects.get(name=cat)
         issue.categories.add(c)
-    issue.poster = UserProfile.objects.get(user = User.objects.get(username = poster))
+    issue.poster = Student.objects.get(user = User.objects.get(username = poster))
     issue.anonymous = anonymous
     issue.status = status
     issue.title = title
