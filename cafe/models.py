@@ -79,7 +79,10 @@ class Issue(models.Model):
         return str(self.id)
 
     def in_categories(self):
-        return [i for i in self.categories.all()]
+        category_names = []
+        for cat in self.categories.all():
+            category_names.append(cat.name)
+        return category_names
 
     @property
     def responses(self):

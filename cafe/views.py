@@ -180,7 +180,7 @@ def get_context_dict_staff(request):
                     'anonymous': issue.anonymous, 
                     'poster': issue_poster,
                     'content': issue.content,
-                    'categories' : issue.in_categories,
+                    'categories' : issue.in_categories(),
                     'status' : issue.status,
                     'responses': responses
                     }
