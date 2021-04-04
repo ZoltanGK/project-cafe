@@ -58,6 +58,7 @@ class Category(models.Model):
                                 content_type=content_type,)
         super(Category, self).save(*args, **kwargs)
     
+    @property
     def issues(self):
         return [i for i in Issue.objects.filter(categories__id = self.id)]
 
@@ -78,8 +79,11 @@ class Issue(models.Model):
         return str(self.id)
 
     def in_categories(self):
-        cats = [str(i) for i in self.categories.all()]
-        return "\n".join(cats)
+        return [i for i in self.categories.all()]
+
+    @property
+    def responses(self):
+        return [i for i in Response.objects.filter(issue = self)]
 
 class Response(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
