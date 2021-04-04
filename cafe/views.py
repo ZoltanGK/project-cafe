@@ -1,11 +1,11 @@
 import urllib
 import json
-
+import datetime
 import requests
 from django.shortcuts import render, redirect
 from .forms import UserCreationForm
 from django.contrib.auth import authenticate, login
-from cafe.forms import ContactForm
+from cafe.forms import ContactForm, IssueForm
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
@@ -69,13 +69,21 @@ def contact(request):
 
 
 def student_account(request):
-    
-    if request.method == 'POST':
-        pass
-        # student is submitting a new issue
-        # read the form and create a new issue
-    # no context dict needed
-    return render(request, 'cafe/student-account.html')
+    form = IssueForm()
+
+    if request.method=='POST':
+        form = IssueForm(request.POST)
+
+        if form.is_valid():
+            form.date = datetime.date.today()
+            form.save(commit=False)
+            return redirect('thank_you')
+        else:
+            print(form.errors)
+    return render(request, 'cafe/student_account.html', {'form' : form})
+
+def thank_you(request):
+    return render(request, 'cafe/thank_you.html')
     
 
 def view_queries(request):   

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from cafe.models import Contact
+from cafe.models import Contact, Issue
 
 class ContactForm(forms.ModelForm):
     name = forms.CharField(max_length=64, required=False, label="Name (optional)")
@@ -10,6 +10,15 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = ('name', 'issue',)
+
+class IssueForm(forms.ModelForm):
+    title = forms.CharField(max_length=64, required=True,  label="Title")
+    content = forms.CharField(label = "Type out your Issue", max_length=1024, widget=forms.Textarea)
+    anonymous = forms.BooleanField(label = "Anonymous?")
+
+    class Meta:
+        model = Issue
+        fields = ('title', 'content', 'anonymous',)
 
 class UserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, label='Email')

@@ -1,0 +1,10 @@
+{% extends 'cafe/base.html' %}
+{% block title_block %}
+    Thank You
+{% endblock %}
+{% block body_block %}
+    <h2>Thank you for submitting your issue.</h2>
+    <br/>
+    <h4>A staff member will respond to your issue soon.</h4>
+    <a href="{% url 'student_account' %}">Return to your student page.</a>
+{% endblock %}
