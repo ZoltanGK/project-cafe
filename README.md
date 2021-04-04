@@ -5,3 +5,17 @@
 This is a project created for the Web App Design 2 course at the University of Glasgow.
 
 The objective of our application is to provide the University of Glasgow Computing Science students with a comprehensive and effective way to submit feedback on all aspects of teaching. 
+
+## External Sources
+
+### APIs
+- [Google reCAPTCHA v2](https://www.google.com/recaptcha/about/)
+
+### Python Libraries
+- [Django](https://www.djangoproject.com/) \[Version 2.2.17\]
+- [django-crispy-forms](https://django-crispy-forms.readthedocs.io/) \[Version 1.11.2\]
+- [Requests](https://docs.python-requests.org/) \[Version 2.25.1\]
+- [Pillow](https://python-pillow.org/) \[Version 6.2.1\]
+
+### Bibliography
+- [Tango with Django](https://www.tangowithdjango.com/)
