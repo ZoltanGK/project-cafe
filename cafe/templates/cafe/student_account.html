@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block body_block %}
+<div class="link" style= "text-align: right; float: right">
+    <a href="#">View your issues</a>
+</div>
 <h1>Post an Issue</h1>
 <form id="issue_form" method="post" action="{% url 'student_account' %}">
     {% csrf_token %}

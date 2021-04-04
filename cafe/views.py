@@ -4,12 +4,13 @@ import datetime
 import requests
 from django.shortcuts import render, redirect
 from .forms import UserCreationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from cafe.forms import ContactForm, IssueForm
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
 from cafe.models import Student, Staff, Issue, Response
+from django.template import RequestContext
 
 def index(request):
 	return render(request, 'cafe/index.html')
@@ -212,4 +213,10 @@ def doLogin(request):
     else:
         messages.error(request, 'Invalid reCAPTCHA. Please try again.')
         return redirect('/accounts/login/')
+
+def user_logout(request):
+    context = RequestContext(request)
+    logout(request)
+    # Redirect back to index page.
+    return redirect('index')
         
