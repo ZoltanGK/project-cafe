@@ -6,6 +6,10 @@
 {% endblock %}
 
 {% block body_block %}
+
+{% if user.is_authenticated %}
+    <h2>Welcome student {{ user.get_username }}.</h2>
+    
 <div class="link" style= "text-align: right; float: right">
     <a href="#">View your issues</a>
 </div>
@@ -16,4 +20,13 @@
     <input type="submit" name="submit" value="Post Issue">
 </form>
 
+{% else %}
+    <div style = "margin : auto ;">
+    <h2>Welcome, new user. Please  sign up or log in.</h2>
+    <ul style ='list-style : none; margin: auto ; display: inline-flex;'>
+        <li style = 'padding:50px;'><a href="{% url 'register' %}">Sign Up</a></li>
+        <li style = 'padding: 50px;'><a href='/accounts/login/'> Log In </a></li>
+    </ul>
+    </div>
+{% endif %}
 {% endblock %}
