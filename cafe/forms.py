@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from cafe.models import Contact, Issue
+from cafe.models import Contact, Issue, Response
 
 class ContactForm(forms.ModelForm):
     name = forms.CharField(max_length=64, required=False, label="Name (optional)")
@@ -33,3 +33,10 @@ class UserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class ResponseForm(forms.ModelForm):
+    content = forms.CharField(label = "Type out your response", max_length=1024, widget=forms.Textarea)
+
+    class Meta:
+        model = Issue
+        fields = ('content',)

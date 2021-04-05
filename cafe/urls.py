@@ -12,5 +12,6 @@ urlpatterns = [
     path('login/student-account/thank-you', views.thank_you, name='thank_you'),
     path('login/staff-account', views.staff_account, name='staff_account'),
     path('login/staff-account/create-response', views.create_response, name='create_response'),
-    path(r'logout/', views.user_logout, name='logout_screen'),
+    path('login/staff-account/thank-you', views.staff_thank_you, name='staff_thank_you'),
+    path('logout/', views.user_logout, name='logout_screen'),
 ]

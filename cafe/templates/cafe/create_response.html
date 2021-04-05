@@ -1,0 +1,25 @@
+{% extends 'cafe/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title_block %}
+    Student Account
+{% endblock %}
+
+{% block body_block %}
+
+{% if user.is_authenticated %}
+<form id="response_form" method="post" action="{% url 'create_response' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" name="submit" value="Post Issue">
+</form>
+{% else %}
+    <div style = "margin : auto ;">
+    <h2>Welcome, new user. Please  sign up or log in.</h2>
+    <ul style ='list-style : none; margin: auto ; display: inline-flex;'>
+        <li style = 'padding: 10px;'><a href="{% url 'register' %}">Sign Up</a></li>
+        <li style = 'padding: 10px;'><a href="{% url 'login' %}"> Log In </a></li>
+    </ul>
+    </div>
+{% endif %}
+{% endblock %}

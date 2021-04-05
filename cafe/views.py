@@ -5,7 +5,7 @@ import requests
 from django.shortcuts import render, redirect
 from .forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from cafe.forms import ContactForm, IssueForm
+from cafe.forms import ContactForm, IssueForm, ResponseForm
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
@@ -77,7 +77,7 @@ def student_account(request):
 
         if form.is_valid():
             form.date = datetime.date.today()
-            form.save(commit=False)
+            form.save(commit=True)
             return redirect('thank_you')
         else:
             print(form.errors)
@@ -86,6 +86,8 @@ def student_account(request):
 def thank_you(request):
     return render(request, 'cafe/thank_you.html')
     
+def staff_thank_you(request):
+    return render(request, 'cafe/staff_thank_you.html')
 
 def view_queries(request):   
     if request.method == 'POST':
@@ -104,12 +106,23 @@ def staff_account(request):
     return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict})
     
 def create_response(request):
+    form = ResponseForm()
+
     if request.method == 'POST':
-        pass
-        #the staff is replying to an issue
-        #create the new reply
+        form = ResponseForm(request.POST)
+
+        if form.is_valid():
+            if Issue:
+                Response = form.save(commit=False)
+                Response.Issue = Issue
+                Response.date = datetime.date.today()
+                Response.poster = Staff.objects.get(user = request.user)
+                Response.save()
+            return redirect('staff_thank_you')
+        else:
+            print(form.errors)
     context_dict = get_context_dict_staff(request)
-    return render(request, 'cafe/create_response.html', context_dict)
+    return render(request, 'cafe/create_response.html', context = {'issue' : context_dict, 'form' : form})
     
 #helper fn to get the context dict for student views
 def get_context_dict_student(request):
