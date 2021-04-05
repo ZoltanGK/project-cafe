@@ -14,7 +14,7 @@ class ContactForm(forms.ModelForm):
 class IssueForm(forms.ModelForm):
     title = forms.CharField(max_length=64, required=True,  label="Title")
     content = forms.CharField(label = "Type out your Issue", max_length=1024, widget=forms.Textarea)
-    anonymous = forms.BooleanField(label = "Anonymous?")
+    anonymous = forms.BooleanField(label = "Anonymous?", required=False)
 
     class Meta:
         model = Issue

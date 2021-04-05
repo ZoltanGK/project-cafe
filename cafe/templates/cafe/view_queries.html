@@ -1,0 +1,42 @@
+{% extends 'cafe/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title_block %}
+    View issues
+{% endblock %}
+
+{% block body_block %}
+    {% if user.is_authenticated %}
+    <div style= 'margin : auto;'>
+        <a style = 'float:none; display:block;' href="{% url 'student_account' %}">Return to Student Homepage</a>
+        <hr/>
+    </div>
+        {% for i in issue.items %}
+            {% for context in i %}
+                <h2>{{context.title}}</h2>
+                <h4>{{context.date}}</h4>
+                {{ context.content }}
+                <br>
+                <br>
+                {% for response in context.responses %}
+                    <br>
+                    <br>
+                    <h5>Resolved by {{ response.poster }} on {{ response.date }} </h5>
+                    <br>
+                    {{ response.content }}
+                    <br><br>
+                {% endfor %}
+
+            {% endfor %}
+            <hr>
+        {% endfor %}
+    {% else %}
+    <div style = "margin : auto ;">
+        <h2>Welcome, new user. Please  sign up or log in.</h2>
+        <ul style ='list-style : none; margin: auto ; display: inline-flex;'>
+            <li style = 'padding: 10px;'><a href="{% url 'register' %}">Sign Up</a></li>
+            <li style = 'padding: 10px;'><a href="{% url 'login' %}"> Log In </a></li>
+        </ul>
+    </div>
+    {% endif %}
+{% endblock %}

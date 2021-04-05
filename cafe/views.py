@@ -95,7 +95,8 @@ def view_queries(request):
     # get all issues for that student 
     # get all responses for each issue
     context_dict = get_context_dict_student(request)
-    return render(request, 'cafe/view_queries.html', context_dict)
+    print(context_dict)
+    return render(request, 'cafe/view_queries.html', context = {'issue' : context_dict})
     
 
 def staff_account(request):
