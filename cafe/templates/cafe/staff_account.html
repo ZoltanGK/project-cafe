@@ -1,0 +1,44 @@
+{% extends 'cafe/base.html' %}
+{% block title_block %}
+    Staff Homepage
+{% endblock %}
+
+{% block body_block %}
+    {% if user.is_authenticated %}
+        <div>
+            <h1> Welcome Staff {{ user.get_username }} </h1>
+        <br/>
+            <h2>View Issues</h2>
+        <hr>
+        <br>
+        </div>
+    <div>
+        {% for i in issue.items %}
+            {% for context in i %}
+                {% if forloop.counter|divisibleby:2 %}
+                <h2>{{context.title}}</h2><a style = 'float:right;' href = '#'>Reply to Issue</a>
+                <h2>{{context.date}}</h2>
+                {% if context.anonymous == False %}
+                    Issue by: {{context.poster}}
+                {% else %}
+                    Issue by: Anonymous
+                {% endif %}
+                <br/><br/>
+                <p>{{ context.content }}</p>
+                
+                <hr/>
+                <br>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style = "margin : auto ;">
+        <h2>Welcome, new user. Please  sign up or log in.</h2>
+            <ul style ='list-style : none; margin: auto ; display: inline-flex;'>
+                <li style = 'padding: 10px;'><a href="{% url 'register' %}">Sign Up</a></li>
+                <li style = 'padding: 10px;'><a href="{% url 'login' %}"> Log In </a></li>
+            </ul>
+    </div>
+    {% endif %}
+{% endblock %}

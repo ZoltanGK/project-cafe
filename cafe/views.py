@@ -101,7 +101,7 @@ def view_queries(request):
 
 def staff_account(request):
     context_dict = get_context_dict_staff(request)
-    return render(request, 'cafe/staff_account.html', context_dict)
+    return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict})
     
 def create_response(request):
     if request.method == 'POST':

@@ -13,20 +13,25 @@
     </div>
         {% for i in issue.items %}
             {% for context in i %}
+            {% if forloop.counter|divisibleby:2 %}
                 <h2>{{context.title}}</h2>
                 <h4>{{context.date}}</h4>
                 {{ context.content }}
                 <br>
                 <br>
-                {% for response in context.responses %}
-                    <br>
-                    <br>
-                    <h5>Resolved by {{ response.poster }} on {{ response.date }} </h5>
-                    <br>
-                    {{ response.content }}
-                    <br><br>
-                {% endfor %}
-
+                {% if context.responses|length == 0 %}
+                    <strong>Unresolved</strong>
+                {% else%}
+                    {% for response in context.responses %}
+                        <br>
+                        <br>
+                        <h5>Resolved by {{ response.poster }} on {{ response.date }} </h5>
+                        <br>
+                        {{ response.content }}
+                        <br><br>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
             {% endfor %}
             <hr>
         {% endfor %}
