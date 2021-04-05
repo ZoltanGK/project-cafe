@@ -78,9 +78,10 @@ def student_account(request):
         form = IssueForm(request.POST)
 
         if form.is_valid():
-            form.poster = request.user.is_authenticated
-            form.date = datetime.date.today()
-            form.save(commit=True)
+            issue = form.save()
+            issue.poster = Student.objects.get(user = request.user)
+            issue.date = datetime.date.today()
+            issue.save()
             return redirect('thank_you')
         else:
             print(form.errors)
