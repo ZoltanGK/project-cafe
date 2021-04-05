@@ -16,10 +16,33 @@
 </head>
 <body>
 	<div>
-		<p><img style = "float : left; margin-left : 80px;" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" /><img style="float : right ; margin-right : 80px;" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" /></p> 
+		<p><img style="float : left; margin-left : 80px;" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" />
+		   <img style="float : right; margin-right : 80px;" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" /></p> 
 		<p><h1 style = "text-align: center;">Central Anonymous Feedback Environment</h1>
 			<h3 style = "text-align: center;">(CAFE)</h3></h></p>
-
+		{% if request.user.is_authenticated %}
+			<p style="float : right; margin-right : 40px">
+				{% if user_info.is_student %}
+					Logged in as {{ user_info.name }} (Student)
+				{% elif user_info.is_staff %}
+					Logged in as {{ user_info.name }} (Staff)
+				{% else %}
+					Logged in as {{ user_info.name }}
+				{% endif %}
+			</p><br/><br/>
+			<ul style = "float: right; margin-right: 40px ; list-style : none; display:inline-flex;">
+			{% if user_info.is_student %}
+				<li><div class="link" style= "text-align: right; float: right">
+					<a href="{% url 'student_account' %}">Post a query</a></li>
+				<li><div class="link" style= "text-align: right; float: right">
+					<a href="{% url 'view_queries' %}">Previous queries</a></li>
+			{% elif user_info.is_staff %}
+				<li><div class="link" style= "text-align: right; float: right">
+					<a href="{% url 'staff_account' %}">Received queries</a></li>
+			{% endif %}
+			<li><a href="{% url 'logout_screen' %}">Logout</a></li>
+		{% endif %}
+		</ul><br/><br/>
 	</div>
 	<hr/>
 	<div class="container">
@@ -29,14 +52,10 @@
 	<br/>
 	<hr/>
 	<div>
-		<p style ='margin-left : 80px'>Site created by Group 13B</p> <br/>
-		<br/>
+		<p style ='margin-left : 80px'>Site created by Group 13B</p>
 		<ul style = "margin : auto ; list-style : none; display:inline-flex;">
 			<li><a href ="{% url 'contact' %}">Contact us</a></li>
 			<li><a href="{% url 'index' %}">To Homepage</a></li> 
-			{% if request.user.is_authenticated %}
-  				<li><a href="{% url 'logout_screen' %}">Logout</a></li>
-			{% endif %}
 		</ul>
 	</div>
 
