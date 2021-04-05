@@ -21,5 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cafe.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('doLogin',views.doLogin,name="do_login"),
 ]

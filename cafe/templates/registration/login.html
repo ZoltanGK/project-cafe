@@ -13,11 +13,11 @@
 	{% endif %}
 
 	{% if next %}
-	<p>You cannot't access this page.</p>
+	<p>You do not have permission to access the given</p>
 	{% endif %}
 
 	<div>
-	<form method="post" action="/doLogin">
+	<form method="post" action="{% url 'login' %}">
 		{% csrf_token %}
 		
 		<p>Username: {{ form.username }}</p>

@@ -241,7 +241,7 @@ def get_context_dict_staff(request):
     print(context_dict)
     return context_dict
 
-def doLogin(request):
+def login(request):
     if request.method=="POST":
         # Checks to see if captcha was passed
         recaptcha_response = request.POST.get('g-recaptcha-response')
@@ -271,10 +271,10 @@ def doLogin(request):
             # If the captcha is failed redirect back to login page
             # so the user can try again.
             messages.error(request,"Invalid Captcha Try Again")
-            return redirect("/doLogin")
+            return redirect('login')
     else:
         messages.error(request, 'Invalid reCAPTCHA. Please try again.')
-        return redirect('/accounts/login/')
+        return redirect('login')
 
 def user_logout(request):
     context = RequestContext(request)
