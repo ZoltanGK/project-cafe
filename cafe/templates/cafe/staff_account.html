@@ -1,44 +1,49 @@
 {% extends 'cafe/base.html' %}
+{% load crispy_forms_tags %}
 {% block title_block %}
     Staff Homepage
 {% endblock %}
 
 {% block body_block %}
-    {% if user.is_authenticated %}
-        <div>
-            <h1> Welcome Staff {{ user.get_username }} </h1>
-        <br/>
-            <h2>View Issues</h2>
+    {% for issue_id, fields in issue.items %}
+        <div class = "issue">
+        <h3><strong>{{fields.title}}</strong></h3>
+        <h4>{{fields.date}}</h4>
+        ID#: {{issue_id}} <br/>
+        {% if fields.anonymous == False %}
+            Issue by: {{context.poster}}
+        {% else %}
+            Issue by: Anonymous
+        {% endif %}
+        {% if fields.status == 0 %}
+            Status: <strong><font color="red">Unresolved</font></strong>
+        {% else%}
+            Status: <strong><font color="green">Resolved</font></strong>
+        {% endif %}
         <hr>
-        <br>
-        </div>
-    <div>
-        {% for i in issue.items %}
-            {% for context in i %}
-                {% if forloop.counter|divisibleby:2 %}
-                <h2>{{context.title}}</h2><a style = 'float:right;' href = "{% url 'create_response' %}">Reply to Issue</a>
-                <h2>{{context.date}}</h2>
-                {% if context.anonymous == False %}
-                    Issue by: {{context.poster}}
-                {% else %}
-                    Issue by: Anonymous
-                {% endif %}
-                <br/><br/>
-                <p>{{ context.content }}</p>
-                
-                <hr/>
-                <br>
-                {% endif %}
+        {{ fields.content }}
+        <hr>
+        {% if fields.responses %}
+            <button class="visibility_toggle" id="toggle_{{issue_id}}_responses" issueId="{{issue_id}}">▷ Responses</button>
+            <br/>
+            <div class="response_container" id = "responses_to_{{ issue_id }}">
+            {% for response in fields.responses %}
+                <div class="response">
+                <h5>Response by {{ response.poster }}</h5>
+                {{ response.date }}
+                <hr>
+                {{ response.content }}
+                </div>
             {% endfor %}
-        {% endfor %}
-    </div>
-    {% else %}
-    <div style = "margin : auto ;">
-        <h2>Welcome, new user. Please  sign up or log in.</h2>
-            <ul style ='list-style : none; margin: auto ; display: inline-flex;'>
-                <li style = 'padding: 10px;'><a href="{% url 'register' %}">Sign Up</a></li>
-                <li style = 'padding: 10px;'><a href="{% url 'login' %}"> Log In </a></li>
-            </ul>
-    </div>
-    {% endif %}
+            </div>
+        {% endif %}
+        
+        <button class = "issue_reply_button" issueId="{{issue_id}}">Reply to Issue</button>
+        <form class="response_form" id="issue_{{issue_id}}_response_form" method="post" action="{% url 'staff_account' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" name="response_for_{{issue_id}}" value="Post Reply">
+        </form>
+        </div>
+    {% endfor %}
 {% endblock %}

@@ -12,17 +12,50 @@ ul {
     margin: 0;
   }
 
-  a {
-    background-color: lightgrey ;
-    color : #333333;
-    padding: 10px;
-    padding-top: 10px;
-    text-decoration : none;
-    margin-left: 30px;
-    text-align : center;
-    border-style: ridge;
-    border-color: darkgray;
-    border-width : 1px;
-    font-family : Helvetica;
-    float : left;
-  }
+a {
+  background-color: lightgrey ;
+  color : #333333;
+  padding: 10px;
+  padding-top: 10px;
+  text-decoration : none;
+  margin-left: 30px;
+  text-align : center;
+  border-style: ridge;
+  border-color: darkgray;
+  border-width : 1px;
+  font-family : Helvetica;
+  float : left;
+}
+
+.issue {
+  margin: 30px;
+  padding: 20px;
+  border-width: 2px;
+  border-color: black;
+  border-style: solid;
+}
+
+.visibility_toggle {
+  border: none;
+  background: none;
+}
+
+.response {
+  margin : 10px;
+  padding: 5px;
+  border-width: 2px;
+  border-color: black;
+  border-style: solid;
+}
+
+.response_container {
+  display: none;
+}
+
+.issue_reply_button {
+  display: inline-flex;
+}
+
+.response_form {
+  display: none;
+}

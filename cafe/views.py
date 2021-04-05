@@ -96,20 +96,50 @@ def staff_thank_you(request):
 
 @login_required
 def view_queries(request):   
+    form = ResponseForm()
+
     if request.method == 'POST':
-        pass
-        #the student is replying to an issue
-        #create the new reply
-    # get all issues for that student 
-    # get all responses for each issue
+        post_keys = list(request.POST.dict().keys())
+        post_vals = list(request.POST.values())
+        response_ix = post_vals.index("Post Reply")
+        issue_id = post_keys[response_ix][13:]
+        form = ResponseForm(request.POST)
+
+        if form.is_valid():
+            response = form.save(commit=False)
+            response.date = datetime.date.today()
+            response.issue = Issue.objects.get(id = issue_id)
+            response.poster = UserProfile.objects.get(user = request.user)
+            response.save()
+            return redirect('view_queries')
+        else:
+            print(form.errors)
     context_dict = get_context_dict_student(request)
     print(context_dict)
-    return render(request, 'cafe/view_queries.html', context = {'issue' : context_dict, 'user_info': user_info_dict(request)})
+    return render(request, 'cafe/view_queries.html', context = {'issue' : context_dict, 'form' : form ,'user_info': user_info_dict(request)})
     
 @login_required
 def staff_account(request):
+    form = ResponseForm()
+
+    if request.method == 'POST':
+        post_keys = list(request.POST.dict().keys())
+        post_vals = list(request.POST.values())
+        response_ix = post_vals.index("Post Reply")
+        issue_id = post_keys[response_ix][13:]
+        form = ResponseForm(request.POST)
+
+        if form.is_valid():
+            response = form.save(commit=False)
+            response.date = datetime.date.today()
+            response.issue = Issue.objects.get(id = issue_id)
+            response.poster = UserProfile.objects.get(user = request.user)
+            response.save()
+            return redirect('staff_thank_you')
+        else:
+            print(form.errors)
     context_dict = get_context_dict_staff(request)
-    return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict, 'user_info': user_info_dict(request)})
+    return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict, 'form' : form, 'user_info': user_info_dict(request)})
 
 @login_required    
 def create_response(request):
@@ -121,7 +151,6 @@ def create_response(request):
         if form.is_valid():
             if Issue:
                 response = form.save(commit=False)
-                response.Issue = Issue
                 response.date = datetime.date.today()
                 response.poster = UserProfile.objects.get(user = request.user)
                 response.save()
