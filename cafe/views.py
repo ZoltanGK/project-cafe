@@ -146,7 +146,7 @@ def get_context_dict_student(request):
     user = request.user
     user_student = Student.objects.get(user=user)
     issues = Issue.objects.filter(poster = user_student)
-    context_dict = {'user_info': user_info_dict(request)}
+    context_dict = {}
     for issue in issues:
         categories = []
         responses = []
@@ -184,7 +184,7 @@ def get_context_dict_staff(request):
             if cat_issue not in issues:
                 issues.append(cat_issue)
         
-    context_dict = {'user_info': user_info_dict(request)}
+    context_dict = {}
     for issue in issues:
         issue_poster = UserProfile.objects.get(user = issue.poster.user).name
         categories = []
