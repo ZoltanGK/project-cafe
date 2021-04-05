@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.contrib.auth.models import AnonymousUser
 from cafe.models import Student, Staff, Issue, Response, UserProfile
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 
 def index(request):
 	return render(request, 'cafe/index.html', {'user_info': user_info_dict(request)})
@@ -69,7 +70,7 @@ def contact(request):
 	return render(request, 'cafe/contact.html', {'form' : form, 'user_info': user_info_dict(request)})
     
 
-
+@login_required
 def student_account(request):
     form = IssueForm()
 
@@ -77,6 +78,7 @@ def student_account(request):
         form = IssueForm(request.POST)
 
         if form.is_valid():
+            form.poster = request.user.is_authenticated
             form.date = datetime.date.today()
             form.save(commit=True)
             return redirect('thank_you')
@@ -84,12 +86,15 @@ def student_account(request):
             print(form.errors)
     return render(request, 'cafe/student_account.html', {'form' : form, 'user_info': user_info_dict(request)})
 
+@login_required
 def thank_you(request):
     return render(request, 'cafe/thank_you.html', {'user_info': user_info_dict(request)})
     
+@login_required    
 def staff_thank_you(request):
     return render(request, 'cafe/staff_thank_you.html', {'user_info': user_info_dict(request)})
 
+@login_required
 def view_queries(request):   
     if request.method == 'POST':
         pass
@@ -101,11 +106,12 @@ def view_queries(request):
     print(context_dict)
     return render(request, 'cafe/view_queries.html', context = {'issue' : context_dict, 'user_info': user_info_dict(request)})
     
-
+@login_required
 def staff_account(request):
     context_dict = get_context_dict_staff(request)
     return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict, 'user_info': user_info_dict(request)})
-    
+
+@login_required    
 def create_response(request):
     form = ResponseForm()
 

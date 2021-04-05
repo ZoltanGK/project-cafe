@@ -16,6 +16,7 @@
 	<p>You cannot't access this page.</p>
 	{% endif %}
 
+	<div>
 	<form method="post" action="/doLogin">
 		{% csrf_token %}
 		
@@ -27,4 +28,13 @@
 		<p><input type="submit" = value="Log In"></p>
 		<input type="hidden" name="next" value="{{ next }}">
 	</form>
+	</div>
+
+	<div>
+		       Don't have an account?
+		<br>
+		<a href="{% url 'register' %}">Create an account</a>
+		<br><br>
+	</div>
+
 {% endblock %}
