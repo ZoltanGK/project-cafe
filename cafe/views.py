@@ -9,14 +9,15 @@ from cafe.forms import ContactForm, IssueForm, ResponseForm
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
+from django.contrib.auth.models import AnonymousUser
 from cafe.models import Student, Staff, Issue, Response, UserProfile
 from django.template import RequestContext
 
 def index(request):
-	return render(request, 'cafe/index.html')
+	return render(request, 'cafe/index.html', {'user_info': user_info_dict(request)})
 
 def wait(request):
-	return render(request, 'cafe/wait.html')
+	return render(request, 'cafe/wait.html', {'user_info': user_info_dict(request)})
 
 def register(request):
     if request.method == 'POST':
@@ -51,7 +52,7 @@ def register(request):
                 return redirect('/register')
     else:
         form = UserCreationForm()
-    context = {'form' : form}
+    context = {'form' : form, 'user_info': user_info_dict(request)}
     return render(request, 'registration/register.html', context)
 
 def contact(request):
@@ -65,7 +66,7 @@ def contact(request):
 			return redirect('index')
 		else:
 			print(form.errors)
-	return render(request, 'cafe/contact.html', {'form' : form})
+	return render(request, 'cafe/contact.html', {'form' : form, 'user_info': user_info_dict(request)})
     
 
 
@@ -81,13 +82,13 @@ def student_account(request):
             return redirect('thank_you')
         else:
             print(form.errors)
-    return render(request, 'cafe/student_account.html', {'form' : form})
+    return render(request, 'cafe/student_account.html', {'form' : form, 'user_info': user_info_dict(request)})
 
 def thank_you(request):
-    return render(request, 'cafe/thank_you.html')
+    return render(request, 'cafe/thank_you.html', {'user_info': user_info_dict(request)})
     
 def staff_thank_you(request):
-    return render(request, 'cafe/staff_thank_you.html')
+    return render(request, 'cafe/staff_thank_you.html', {'user_info': user_info_dict(request)})
 
 def view_queries(request):   
     if request.method == 'POST':
@@ -98,12 +99,12 @@ def view_queries(request):
     # get all responses for each issue
     context_dict = get_context_dict_student(request)
     print(context_dict)
-    return render(request, 'cafe/view_queries.html', context = {'issue' : context_dict})
+    return render(request, 'cafe/view_queries.html', context = {'issue' : context_dict, 'user_info': user_info_dict(request)})
     
 
 def staff_account(request):
     context_dict = get_context_dict_staff(request)
-    return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict})
+    return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict, 'user_info': user_info_dict(request)})
     
 def create_response(request):
     form = ResponseForm()
@@ -122,7 +123,7 @@ def create_response(request):
         else:
             print(form.errors)
     context_dict = get_context_dict_staff(request)
-    return render(request, 'cafe/create_response.html', context = {'issue' : context_dict, 'form' : form})
+    return render(request, 'cafe/create_response.html', context = {'issue' : context_dict, 'form' : form, 'user_info': user_info_dict(request)})
     
 #helper fn to get the context dict for student views
 def get_context_dict_student(request):
@@ -139,7 +140,7 @@ def get_context_dict_student(request):
     user = request.user
     user_student = Student.objects.get(user=user)
     issues = Issue.objects.filter(poster = user_student)
-    context_dict = {}
+    context_dict = {'user_info': user_info_dict(request)}
     for issue in issues:
         categories = []
         responses = []
@@ -177,7 +178,7 @@ def get_context_dict_staff(request):
             if cat_issue not in issues:
                 issues.append(cat_issue)
         
-    context_dict = {}
+    context_dict = {'user_info': user_info_dict(request)}
     for issue in issues:
         issue_poster = UserProfile.objects.get(user = issue.poster.user).name
         categories = []
@@ -242,3 +243,15 @@ def user_logout(request):
     # Redirect back to index page.
     return redirect('index')
         
+def user_info_dict(request):
+    user = request.user
+    if user.is_authenticated:
+        is_student = len(Student.objects.filter(user = user)) > 0
+        is_staff = len(Staff.objects.filter(user = user)) > 0
+        if UserProfile.objects.filter(user=user):
+            name = UserProfile.objects.get(user=user).name
+        else:
+            name = "Unknown"
+        return {"is_student": is_student, "is_staff": is_staff, "name": name}
+    else:
+        return {"is_student": False, "is_staff": False, "name": "Unknown"}
