@@ -38,5 +38,5 @@ class ResponseForm(forms.ModelForm):
     content = forms.CharField(label = "Type out your response", max_length=1024, widget=forms.Textarea)
 
     class Meta:
-        model = Issue
+        model = Response
         fields = ('content',)

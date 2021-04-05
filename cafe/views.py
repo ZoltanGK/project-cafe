@@ -113,11 +113,11 @@ def create_response(request):
 
         if form.is_valid():
             if Issue:
-                Response = form.save(commit=False)
-                Response.Issue = Issue
-                Response.date = datetime.date.today()
-                Response.poster = Staff.objects.get(user = request.user)
-                Response.save()
+                response = form.save(commit=False)
+                response.Issue = Issue
+                response.date = datetime.date.today()
+                response.poster = UserProfile.objects.get(user = request.user)
+                response.save()
             return redirect('staff_thank_you')
         else:
             print(form.errors)
