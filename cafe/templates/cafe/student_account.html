@@ -8,12 +8,12 @@
 {% block body_block %}
 
 {% if user.is_authenticated %}
-    <h2>Welcome student {{ user.get_username }}.</h2>
+    <h1>Welcome Student {{ user.get_username }}.</h1>
     
 <div class="link" style= "text-align: right; float: right">
     <a href="#">View your issues</a>
 </div>
-<h1>Post an Issue</h1>
+<h2 style="text-decoration: underline;">Post an Issue</h2>
 <form id="issue_form" method="post" action="{% url 'student_account' %}">
     {% csrf_token %}
     {{ form|crispy }}
@@ -24,8 +24,8 @@
     <div style = "margin : auto ;">
     <h2>Welcome, new user. Please  sign up or log in.</h2>
     <ul style ='list-style : none; margin: auto ; display: inline-flex;'>
-        <li style = 'padding:50px;'><a href="{% url 'register' %}">Sign Up</a></li>
-        <li style = 'padding: 50px;'><a href='/accounts/login/'> Log In </a></li>
+        <li style = 'padding: 10px;'><a href="{% url 'register' %}">Sign Up</a></li>
+        <li style = 'padding: 10px;'><a href='/accounts/login/'> Log In </a></li>
     </ul>
     </div>
 {% endif %}

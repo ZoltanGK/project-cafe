@@ -16,11 +16,13 @@ ul {
     background-color: lightgrey ;
     color : #333333;
     padding: 10px;
+    padding-top: 10px;
     text-decoration : none;
     margin-left: 30px;
     text-align : center;
     border-style: ridge;
-    border-width : 2px;
+    border-color: darkgray;
+    border-width : 1px;
     font-family : Helvetica;
     float : left;
   }
