@@ -7,12 +7,6 @@
 
 {% block body_block %}
 
-{% if user.is_authenticated %}
-    <h1>Welcome Student {{ user.get_username }}.</h1>
-    
-<div class="link" style= "text-align: right; float: right">
-    <a href="{% url 'view_queries' %}">View your issues</a>
-</div>
 <h2 style="text-decoration: underline;">Post an Issue</h2>
 <form id="issue_form" method="post" action="{% url 'student_account' %}">
     {% csrf_token %}
@@ -20,13 +14,4 @@
     <input type="submit" name="submit" value="Post Issue">
 </form>
 
-{% else %}
-    <div style = "margin : auto ;">
-    <h2>Welcome, new user. Please  sign up or log in.</h2>
-    <ul style ='list-style : none; margin: auto ; display: inline-flex;'>
-        <li style = 'padding: 10px;'><a href="{% url 'register' %}">Sign Up</a></li>
-        <li style = 'padding: 10px;'><a href="{% url 'login' %}"> Log In </a></li>
-    </ul>
-    </div>
-{% endif %}
 {% endblock %}
