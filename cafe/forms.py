@@ -40,3 +40,11 @@ class ResponseForm(forms.ModelForm):
     class Meta:
         model = Response
         fields = ('content',)
+
+class StudentResponseForm(forms.ModelForm):
+    content = forms.CharField(label = "Type out your response", max_length=1024, widget=forms.Textarea)
+    anonymous = forms.BooleanField(label = "Anonymous?", required=False)
+
+    class Meta:
+        model = Response
+        fields = ('content','anonymous',)

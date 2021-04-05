@@ -101,6 +101,7 @@ class Response(models.Model):
     content = models.CharField(max_length = 1024)
     # If the User who posted the response is delete, keep the response
     poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+    anonymous = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.issue.id) + "." + str(self.number)

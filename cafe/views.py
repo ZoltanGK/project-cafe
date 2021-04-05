@@ -5,7 +5,7 @@ import requests
 from django.shortcuts import render, redirect
 from .forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from cafe.forms import ContactForm, IssueForm, ResponseForm
+from cafe.forms import ContactForm, IssueForm, ResponseForm, StudentResponseForm
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
@@ -96,14 +96,14 @@ def staff_thank_you(request):
 
 @login_required
 def view_queries(request):   
-    form = ResponseForm()
+    form = StudentResponseForm()
 
     if request.method == 'POST':
         post_keys = list(request.POST.dict().keys())
         post_vals = list(request.POST.values())
         response_ix = post_vals.index("Post Reply")
         issue_id = post_keys[response_ix][13:]
-        form = ResponseForm(request.POST)
+        form = StudentResponseForm(request.POST)
 
         if form.is_valid():
             response = form.save(commit=False)
@@ -183,7 +183,9 @@ def get_context_dict_student(request):
             categories.append(category.name)
         for response in Response.objects.filter(issue = issue).order_by('number'):
             response_poster = UserProfile.objects.get(user = response.poster.user).name
-            dict_response = {'number' : response.number, 'date': response.date, 'content': response.content, 'poster': response_poster}
+            dict_response = {'number' : response.number, 'date': response.date, 
+                             'content': response.content, 'poster': response_poster,
+                             'anonymous': response.anonymous}
             responses.append(dict(dict_response))
         context_dict[issue.id] = { 
                     'title': issue.title,
@@ -222,7 +224,9 @@ def get_context_dict_staff(request):
             categories.append(category.name)
         for response in Response.objects.filter(issue = issue).order_by('number'):
             response_poster = UserProfile.objects.get(user = response.poster.user).name
-            dict_response = {'number' : response.number, 'date': response.date, 'content': response.content, 'poster': response_poster}
+            dict_response = {'number' : response.number, 'date': response.date, 
+                             'content': response.content, 'poster': response_poster,
+                             'anonymous': response.anonymous}
             responses.append(dict(dict_response))
         context_dict[issue.id] = { 
                     'title': issue.title,

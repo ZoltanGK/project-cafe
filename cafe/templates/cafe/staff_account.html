@@ -29,7 +29,11 @@
             <div class="response_container" id = "responses_to_{{ issue_id }}">
             {% for response in fields.responses %}
                 <div class="response">
-                <h5>Response by {{ response.poster }}</h5>
+                {% if response.anonymous == True %}
+                    <h5>Response by an anonymous student</h5>
+                {% else %}
+                    <h5>Response by {{ response.poster }}</h5>
+                {% endif %}
                 {{ response.date }}
                 <hr>
                 {{ response.content }}
