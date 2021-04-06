@@ -18,7 +18,10 @@ def index(request):
 	return render(request, 'cafe/index.html', {'user_info': user_info_dict(request)})
 
 def wait(request):
-	return render(request, 'cafe/wait.html', {'user_info': user_info_dict(request)})
+    user_type = get_user_type(request)
+    if user_type != "Unassigned":
+        return redirect_to_correct_page(user_type)
+    return render(request, 'cafe/wait.html', {'user_info': user_info_dict(request)})
 
 def register(request):
     if request.method == 'POST':
@@ -71,8 +74,13 @@ def contact(request):
 
 @login_required
 def student_account(request):
+    # make sure only students access this view
+    user_type = get_user_type(request)
+    if user_type != "Student":
+        #redirect non-students to their own page
+        return redirect_to_correct_page(user_type)
+    
     form = IssueForm()
-
     if request.method=='POST':
         form = IssueForm(request.POST)
 
@@ -88,14 +96,26 @@ def student_account(request):
 
 @login_required
 def thank_you(request):
+    user_type = get_user_type(request)
+    if user_type != "Student":
+        return redirect_to_correct_page(user_type)
     return render(request, 'cafe/thank_you.html', {'user_info': user_info_dict(request)})
     
 @login_required    
 def staff_thank_you(request):
+    user_type = get_user_type(request)
+    if user_type != "Staff":
+        return redirect_to_correct_page(user_type)
     return render(request, 'cafe/staff_thank_you.html', {'user_info': user_info_dict(request)})
 
 @login_required
-def view_queries(request):   
+def view_queries(request): 
+    # make sure only students access this view
+    user_type = get_user_type(request)
+    if user_type != "Student":
+        #redirect non-students to their own page
+        return redirect_to_correct_page(user_type)
+    
     form = StudentResponseForm()
 
     if request.method == 'POST':
@@ -119,6 +139,12 @@ def view_queries(request):
     
 @login_required
 def staff_account(request):
+    # make sure only staff access this view
+    user_type = get_user_type(request)
+    if user_type != "Staff":
+        #redirect non-staff to their own page
+        return redirect_to_correct_page(user_type)
+    
     form = ResponseForm()
 
     if request.method == 'POST':
@@ -141,7 +167,61 @@ def staff_account(request):
     return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict, 'form' : form, 'user_info': user_info_dict(request)})
 
 
-    
+   
+def login(request):
+    if request.method=="POST":
+        # Checks to see if captcha was passed
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        url = 'https://www.google.com/recaptcha/api/siteverify'
+        cap_secret="6LfOhpkaAAAAABVLBsLiHM2j8mak-1fQrqz-spSY"
+        values = {
+            'secret': cap_secret,
+            'response': recaptcha_response
+            }
+        cap_server_response=requests.post(url= url, data=values)
+        cap_json=json.loads(cap_server_response.text)
+
+        # If the captcha is passed and the fields are filled out correctly:
+        # login and go to the home page.
+        if cap_json['success']==True:
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            if Staff.objects.filter(user = user):
+                return redirect('staff_account')
+            elif Student.objects.filter(user = user):
+                return redirect('student_account')
+            else:
+                return redirect('wait')
+        else:
+            # If the captcha is failed redirect back to login page
+            # so the user can try again.
+            messages.error(request,"Invalid Captcha Try Again")
+            return redirect('login')
+    else:
+        messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+        return redirect('login')
+
+def user_logout(request):
+    context = RequestContext(request)
+    logout(request)
+    # Redirect back to index page.
+    return redirect('index')
+        
+def user_info_dict(request):
+    user = request.user
+    if user.is_authenticated:
+        is_student = len(Student.objects.filter(user = user)) > 0
+        is_staff = len(Staff.objects.filter(user = user)) > 0
+        if UserProfile.objects.filter(user=user):
+            name = UserProfile.objects.get(user=user).name
+        else:
+            name = "Unknown"
+        return {"is_student": is_student, "is_staff": is_staff, "name": name}
+    else:
+        return {"is_student": False, "is_staff": False, "name": "Unknown"}
+        
 #helper fn to get the context dict for student views
 def get_context_dict_student(request):
     #context_dict is a dictionary of all issues and replies of the format: 
@@ -217,57 +297,22 @@ def get_context_dict_staff(request):
                     'responses': responses
                     }
     return context_dict
-
-def login(request):
-    if request.method=="POST":
-        # Checks to see if captcha was passed
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        url = 'https://www.google.com/recaptcha/api/siteverify'
-        cap_secret="6LfOhpkaAAAAABVLBsLiHM2j8mak-1fQrqz-spSY"
-        values = {
-            'secret': cap_secret,
-            'response': recaptcha_response
-            }
-        cap_server_response=requests.post(url= url, data=values)
-        cap_json=json.loads(cap_server_response.text)
-
-        # If the captcha is passed and the fields are filled out correctly:
-        # login and go to the home page.
-        if cap_json['success']==True:
-            username = request.POST.get("username")
-            password = request.POST.get("password")
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            if Staff.objects.filter(user = user):
-                return redirect('staff_account')
-            elif Student.objects.filter(user = user):
-                return redirect('student_account')
-            else:
-                return redirect('wait')
-        else:
-            # If the captcha is failed redirect back to login page
-            # so the user can try again.
-            messages.error(request,"Invalid Captcha Try Again")
-            return redirect('login')
+    
+#helper fn to get the type of user making the request (staff/student/unassigned)
+def get_user_type(request):
+    if len(Student.objects.filter(user = request.user))>0:
+        return "Student"
+    elif len(Staff.objects.filter(user = request.user))>0:
+        return "Staff"
     else:
-        messages.error(request, 'Invalid reCAPTCHA. Please try again.')
-        return redirect('login')
-
-def user_logout(request):
-    context = RequestContext(request)
-    logout(request)
-    # Redirect back to index page.
-    return redirect('index')
+        return "Unassigned"
         
-def user_info_dict(request):
-    user = request.user
-    if user.is_authenticated:
-        is_student = len(Student.objects.filter(user = user)) > 0
-        is_staff = len(Staff.objects.filter(user = user)) > 0
-        if UserProfile.objects.filter(user=user):
-            name = UserProfile.objects.get(user=user).name
-        else:
-            name = "Unknown"
-        return {"is_student": is_student, "is_staff": is_staff, "name": name}
+#helper fn to redirect a user from a page they are not authorised to access (such as staff accessing a student view)
+def redirect_to_correct_page(user_type):
+    if user_type == "Staff":
+        print("redirecting")
+        return redirect('/login/staff-account/')
+    elif user_type == "Student":
+        return redirect('/login/student-account/')
     else:
-        return {"is_student": False, "is_staff": False, "name": "Unknown"}
+        return redirect('/wait')
