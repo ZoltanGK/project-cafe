@@ -140,24 +140,7 @@ def staff_account(request):
     context_dict = get_context_dict_staff(request)
     return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict, 'form' : form, 'user_info': user_info_dict(request)})
 
-@login_required    
-def create_response(request):
-    form = ResponseForm()
 
-    if request.method == 'POST':
-        form = ResponseForm(request.POST)
-
-        if form.is_valid():
-            if Issue:
-                response = form.save(commit=False)
-                response.date = datetime.date.today()
-                response.poster = UserProfile.objects.get(user = request.user)
-                response.save()
-            return redirect('staff_thank_you')
-        else:
-            print(form.errors)
-    context_dict = get_context_dict_staff(request)
-    return render(request, 'cafe/create_response.html', context = {'issue' : context_dict, 'form' : form, 'user_info': user_info_dict(request)})
     
 #helper fn to get the context dict for student views
 def get_context_dict_student(request):
