@@ -270,7 +270,7 @@ def get_context_dict_staff(request):
     user_categories = user_staff.get_cats_resp()
     issues = user_categories[0].issues
     for cat in user_categories:
-        issues.union(cat.issues)
+        issues = issues.union(cat.issues)
     issues.order_by('-date')
 
     context_dict = {}
