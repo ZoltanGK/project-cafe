@@ -6,6 +6,11 @@ This is a project created for the Web App Design 2 course at the University of G
 
 The objective of our application is to provide the University of Glasgow Computing Science students with a comprehensive and effective way to submit feedback on all aspects of teaching. 
 
+## Instructions for first-time setup
+1. Install required python libraries using `pip install -r requirements.txt`
+1. Make migrations using `python manage.py makemigrations cafe`
+1. Migrate using `python manage.py migrate`
+
 ## External Sources
 
 ### APIs
