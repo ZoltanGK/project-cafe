@@ -17,16 +17,20 @@
         {% endif %}
         </p>
         <p class = "issue_id">ID#: {{issue_id}}</p>
+        <p class = "issue_poster">
+        Issue by: 
         {% if fields.anonymous == False %}
-            Issue by: {{context.poster}}
+            {{fields.poster}}
         {% else %}
-            Issue by: Anonymous
+            Anonymous
         {% endif %}
+        </p>
         <div class = "issue_status">
+        Status: 
         {% if fields.status == 0 %}
-            Status: <p class="unresolved_issue">Unresolved</p>
+            <p class="unresolved_issue">Unresolved</p>
         {% else%}
-            Status: <p class="resolved_issue">Resolved</p>
+            <p class="resolved_issue">Resolved</p>
         {% endif %}
         </div>
         <hr>
