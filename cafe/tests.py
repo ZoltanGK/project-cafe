@@ -5,6 +5,7 @@ from django.test import TestCase
 from cafe.models import User, Permission, Category, Staff, Student
 import cafe.urls
 from population_script import populate
+from cafe.http import HttpResponse
 
 VIEW_NAMES = ["index", "contact", "register", "login", "wait",
         "student_account", "staff_account",

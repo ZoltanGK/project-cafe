@@ -11,6 +11,7 @@ from django.contrib import messages
 from cafe.models import Student, Staff, Issue, Response, UserProfile
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 def index(request):
 	return render(request, 'cafe/index.html', {'user_info': user_info_dict(request)})
@@ -182,7 +183,6 @@ def staff_account(request):
     context_dict = get_context_dict_staff(request)
     return render(request, 'cafe/staff_account.html', context = {'issue' : context_dict, 'form' : form, 'user_info': user_info_dict(request)})
 
-
    
 def doLogin(request):
     if request.method=="POST":
@@ -203,13 +203,16 @@ def doLogin(request):
             username = request.POST.get("username")
             password = request.POST.get("password")
             user = authenticate(username=username, password=password)
-            login(request, user)
-            if Staff.objects.filter(user = user):
-                return redirect('staff_account')
-            elif Student.objects.filter(user = user):
-                return redirect('student_account')
+            if user:
+                login(request, user)
+                if Staff.objects.filter(user = user):
+                    return redirect('staff_account')
+                elif Student.objects.filter(user = user):
+                    return redirect('student_account')
+                else:
+                    return redirect('index')
             else:
-                return redirect('index')
+                return HttpResponse("Invalid login details supplied.")
         else:
             # If the captcha is failed redirect back to login page
             # so the user can try again.
