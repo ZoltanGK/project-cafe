@@ -2,25 +2,32 @@ import datetime
 from django.urls import reverse, resolve
 from django.urls.exceptions import NoReverseMatch
 from django.test import TestCase
-from cafe.models import User, Staff
+from cafe.models import User, Permission, Category, Staff, Student
 import cafe.urls
 from populate_db import populate
 
 VIEW_NAMES = ["index", "contact", "register", "login", "wait",
         "student_account", "staff_account",
-        "view_queries"]
+        "view_queries", "thank_you", "staff_thank_you", "logout_screen"]
 
 
 
 class BaseTestCase(TestCase):
     """
     Abstract superclass for further tests.
-    Populates the database and creates a testAdmin as superuser.
+    Populates the database and creates a testAdmin as superuser with acces to
+    all views and categories.
     """
 
     def setUp(self):
-        populate()
-        User.objects.create_superuser('testAdmin', 'admin@admin.com', '@dmin123')
+        populate(silent=True)
+        admin_user = User.objects.create_superuser('testAdmin', 'admin@admin.com', '@dmin123')
+        Student.objects.create(user = admin_user)
+        Staff.objects.create(user = admin_user)
+        for cat in Category.objects.all():
+            permission = Permission.objects.get(codename = f"resp-for-{cat.slug}")
+            admin_user.user_permissions.add(permission)
+        
 
 class ViewAndTemplateTests(BaseTestCase):
     def setUp(self):
@@ -29,6 +36,7 @@ class ViewAndTemplateTests(BaseTestCase):
 
         Then collect the responses from all the URLs defined in the design spec.
         """
+        super().setUp()
         self.client.login(username='testAdmin', password='@dmin123')
         self.response_dict = {}
 
@@ -46,7 +54,7 @@ class ViewAndTemplateTests(BaseTestCase):
     
     def test_pages_link_to_contact_us(self):
         for url, response in self.response_dict.items():
-            self.assertTrue(reverse("contact_us") in response.content.decode(), f"NO CONTACT US LINK:  {url} contained no link to the Contact Us page for superuser.")
+            self.assertTrue(reverse("contact") in response.content.decode(), f"NO CONTACT US LINK:  {url} contained no link to the Contact Us page for superuser.")
     
     def test_pages_allow_logout(self):
         for url, response in self.response_dict.items():
@@ -57,30 +65,27 @@ class ViewAndTemplateTests(BaseTestCase):
 
 class StaffViewTests(BaseTestCase):
     def setUp(self):
+        super().setUp()
         self.client.logout()
         self.client.login(username = "jsmith", password = "@dmin123")
 
     def test_staff_has_correct_cats(self):
-        jsmith_cats = [str(i) for i in Staff.objects.get(user = User.objects.get(username = "jsmith").get_cats_resp())]
-        jsmith_cats.sort()
+        jsmith_cats = [str(i) for i in Staff.objects.get(user = User.objects.get(username = "jsmith")).get_cats_resp()]
         correct_cats = ["General Tutor Feedback", "Test Category"]
         self.assertEqual(jsmith_cats, correct_cats, f"STAFF CATEGORIES WRONG: .get_cats_resp() for 'jsmith' didn't return the correct categories.")
 
     def test_staff_has_correct_access(self):
         response_login = self.client.get(reverse("staff_account"))
-        response_response_creation = self.client.get(reverse("create_response"))
         self.assertEqual(response_login.status_code, 200, f"STAFF DENIED ACCESS: Staff couldn't access their login page ({reverse('staff_account')}).")
-        self.assertEqual(response_response_creation.status_code, 200, f"STAFF DENIED ACCESS: Staff couldn't access their response writing page ({reverse('create_response')}).")
 
     def test_staff_sees_correct_issues(self):
         response_login = self.client.get(reverse("staff_account"))
         self.assertTrue("General Tutor Feedback" in response_login.content.decode(), f"CATEGORY NOT FOUND: user 'jsmith' couldn't see the 'General Tutor Feedback' category in '{reverse('staff_account')}'.")
-        self.assertTrue("Test Category" in response_login.content.decode(), f"CATEGORY NOT FOUND: user 'jsmith' couldn't see the 'Test Category' category in '{reverse('staff_account')}'.")
-        self.assertFalse("CS1P Feedback" in response_login.content.decode(), f"WRONG CATEGORY FOUND: user 'jsmith' saw 'CS1P Feedback' category in '{reverse('staff_account')}', even though they shouldn't have access.")
-        self.assertFalse("Online Learning Feedback" in response_login.content.decode(), f"WRONG CATEGORY FOUND: user 'jsmith' saw 'Online Learning Feedback' category in '{reverse('staff_account')}', even though they shouldn't have access.")        
+        self.assertTrue("Test Category" in response_login.content.decode(), f"CATEGORY NOT FOUND: user 'jsmith' couldn't see the 'Test Category' category in '{reverse('staff_account')}'.")       
 
 class StudentViewTests(BaseTestCase):
     def setUp(self):
+        super().setUp()
         self.client.logout()
         self.client.login(username = "ay", password = "@dmin123")
 
