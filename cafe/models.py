@@ -29,6 +29,7 @@ class Staff(models.Model):
         return self.user.username
 
     def get_cats_resp(self):
+        # Returns all the categories given staff member is responsible for
         cats = []
         for c in Category.objects.all():
             if self.user.has_perm(f"cafe.resp-for-{c.slug}"):
@@ -72,13 +73,12 @@ class Category(models.Model):
 class Issue(models.Model):
     date = models.DateField(auto_now_add=True)
     categories = models.ManyToManyField(Category)
-    # Can also use TextField, but then length cannot be limited if I understand 
-    # correctly
     title = models.CharField(max_length = 64)
+    # Can also use TextField, but we opted to have a limited length
     content = models.CharField(max_length = 1024)
     poster = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True)
     anonymous = models.BooleanField(default=False)
-    #TODO: Figure out what status corresponds to what
+    # Not currently fully utilised
     status = models.IntegerField(default=0)
 
     def __str__(self):
@@ -96,10 +96,11 @@ class Issue(models.Model):
 
 class Response(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
+    # This is technically the id of a response
     number = models.AutoField(primary_key=True)
     date = models.DateField(auto_now_add=True)
     content = models.CharField(max_length = 1024)
-    # If the User who posted the response is delete, keep the response
+    # Even if the User who posted the response is deleted, keep the response
     poster = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
     anonymous = models.BooleanField(default=False)
 

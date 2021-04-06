@@ -8,8 +8,6 @@ from django.contrib.auth import authenticate, login, logout
 from cafe.forms import ContactForm, IssueForm, ResponseForm, StudentResponseForm
 from django.conf import settings
 from django.contrib import messages
-from django.urls import reverse
-from django.contrib.auth.models import AnonymousUser
 from cafe.models import Student, Staff, Issue, Response, UserProfile
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -19,6 +17,7 @@ def index(request):
 
 def wait(request):
     user_type = get_user_type(request)
+    # If user is not Unassigned, then redirect them to their own login page
     if user_type != "Unassigned":
         return redirect_to_correct_page(user_type)
     return render(request, 'cafe/wait.html', {'user_info': user_info_dict(request)})
@@ -59,6 +58,7 @@ def register(request):
     return render(request, 'registration/register.html', context)
 
 def contact(request):
+    # Contact form that creates a Contact object that admins can view.
 	form = ContactForm()
 	
 	if request.method =='POST':
@@ -86,8 +86,8 @@ def student_account(request):
 
         if form.is_valid():
             issue = form.save()
+            # Form didn't contain user info, so add that here
             issue.poster = Student.objects.get(user = request.user)
-            issue.date = datetime.date.today()
             issue.save()
             return redirect('thank_you')
         else:
@@ -119,15 +119,22 @@ def view_queries(request):
     form = StudentResponseForm()
 
     if request.method == 'POST':
+        # We need to find the id of the issue the response is to
+        # This info is contained in the name of the submit input
+        # That name is a key in request.POST
         post_keys = list(request.POST.dict().keys())
+        # We know the corresponding value ("Post Reply"), so we find that first,
+        # then use that to find the name.
         post_vals = list(request.POST.values())
         response_ix = post_vals.index("Post Reply")
+        # Name is of the format "response_for_issue_id" and we need only the
+        # issue_id
         issue_id = post_keys[response_ix][13:]
+
         form = StudentResponseForm(request.POST)
 
         if form.is_valid():
             response = form.save(commit=False)
-            response.date = datetime.date.today()
             response.issue = Issue.objects.get(id = issue_id)
             response.poster = UserProfile.objects.get(user = request.user)
             response.save()
@@ -148,15 +155,22 @@ def staff_account(request):
     form = ResponseForm()
 
     if request.method == 'POST':
+        # We need to find the id of the issue the response is to
+        # This info is contained in the name of the submit input
+        # That name is a key in request.POST
         post_keys = list(request.POST.dict().keys())
+        # We know the corresponding value ("Post Reply"), so we find that first,
+        # then use that to find the name.
         post_vals = list(request.POST.values())
         response_ix = post_vals.index("Post Reply")
+        # Name is of the format "response_for_issue_id" and we need only the
+        # issue_id
         issue_id = post_keys[response_ix][13:]
+
         form = ResponseForm(request.POST)
 
         if form.is_valid():
             response = form.save(commit=False)
-            response.date = datetime.date.today()
             response.issue = Issue.objects.get(id = issue_id)
             response.poster = UserProfile.objects.get(user = request.user)
             response.save()
@@ -210,10 +224,18 @@ def user_logout(request):
     return redirect('index')
         
 def user_info_dict(request):
+    """
+    Returns a dictionary of the user's staff/student status and their full name.
+
+    For unauthenticated/unassigned users, returns name as Unknown.
+    """
     user = request.user
     if user.is_authenticated:
+        # There must be exactly one student/staff object for each user if they have the role
+        # So if we find none, then the user isn't a staff/student
         is_student = len(Student.objects.filter(user = user)) > 0
         is_staff = len(Staff.objects.filter(user = user)) > 0
+        # We expect the userprofile to exist and contain the user's full name
         if UserProfile.objects.filter(user=user):
             name = UserProfile.objects.get(user=user).name
         else:
@@ -224,27 +246,29 @@ def user_info_dict(request):
         
 #helper fn to get the context dict for student views
 def get_context_dict_student(request):
-    #context_dict is a dictionary of all issues and replies of the format: 
-    # {'issue id':{'title': title, 
-    #               'date': date, 
-    #               'anonymous': anonymous, 
-    #               'poster': poster,
-    #               'content': content 
-    #               'categories' : categories,
-    #               'status' : status,
-    #               'responses':[{'number': number, 'date':date, 'content':content, 'poster': poster}]
-    #               }
+    """
+    context_dict is a dictionary of all issues and replies of the format: 
+    {'issue id':{'title': title, 
+                  'date': date, 
+                  'anonymous': anonymous, 
+                  'poster': poster,
+                  'content': content 
+                  'categories' : categories,
+                  'num_categories' : len(categories),
+                  'status' : status,
+                  'responses':[{'number': number, 'date':date, 'content':content, 'poster': poster, 'anonymous': anonymous}]
+                  }
+    """
     user = request.user
     user_student = Student.objects.get(user=user)
-    issues = Issue.objects.filter(poster = user_student).order_by('-date')
+    # Find all posts by user and order them by newest first
+    # Date here is redundant as newer objects have higher IDs, but this should 
+    # be helpful for futureproofing
+    issues = Issue.objects.filter(poster = user_student).order_by('-date', '-id')
     context_dict = {}
     for issue in issues:
-        categories = []
         responses = []
-        num_categories = 0
-        for category in issue.categories.all():
-            categories.append(category.name)
-            num_categories += 1
+        num_categories = issue.categories.all().count()
         for response in Response.objects.filter(issue = issue).order_by('number'):
             response_poster = UserProfile.objects.get(user = response.poster.user).name
             dict_response = {'number' : response.number, 'date': response.date, 
@@ -266,25 +290,22 @@ def get_context_dict_student(request):
  
 #helper fn to get the context dict for staff views 
 def get_context_dict_staff(request):
-    #context_dict format is the same as for students:    
+    #context_dict format is the same as for students 
     user = request.user
     user_staff = Staff.objects.get(user=user)
     #categories assigned to that user
     user_categories = user_staff.get_cats_resp()
+    # combine all the issues in said categories
     issues = user_categories[0].issues
     for cat in user_categories:
         issues = issues.union(cat.issues)
-    issues.order_by('-date')
+    issues.order_by('-date', '-id')
 
     context_dict = {}
     for issue in issues:
         issue_poster = UserProfile.objects.get(user = issue.poster.user).name
-        categories = []
         responses = []
-        num_categories = 0
-        for category in issue.categories.all():
-            categories.append(category.name)
-            num_categories += 1
+        num_categories = issue.categories.all().count()
         for response in Response.objects.filter(issue = issue).order_by('number'):
             response_poster = UserProfile.objects.get(user = response.poster.user).name
             dict_response = {'number' : response.number, 'date': response.date, 

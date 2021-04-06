@@ -37,6 +37,8 @@ class UserCreationForm(UserCreationForm):
         return user
 
 class ResponseForm(forms.ModelForm):
+    # Allows for submission of a reply to a given issue
+    # Issue information is passed in request.POST
     content = forms.CharField(label = "Type out your response", max_length=1024, widget=forms.Textarea)
 
     class Meta:
@@ -44,6 +46,7 @@ class ResponseForm(forms.ModelForm):
         fields = ('content',)
 
 class StudentResponseForm(forms.ModelForm):
+    # Student version of ResponseForm that allows for anonymous replies
     content = forms.CharField(label = "Type out your response", max_length=1024, widget=forms.Textarea)
     anonymous = forms.BooleanField(label = "Anonymous?", required=False)
 
