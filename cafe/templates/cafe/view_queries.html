@@ -11,11 +11,13 @@
         <h3><strong>{{fields.title}}</strong></h3>
         <h4>{{fields.date}}</h4>
         ID#: {{issue_id}} <br/>
+        <div class = "issue_status">
         {% if fields.status == 0 %}
-            Status: <strong><font color="red">Unresolved</font></strong>
+            Status: <p class="unresolved_issue">Unresolved</p>
         {% else%}
-            Status: <strong><font color="green">Resolved</font></strong>
+            Status: <p class="resolved_issue">Resolved</p>
         {% endif %}
+        </div>
         <hr>
         {{ fields.content }}
         <hr>
