@@ -2,15 +2,16 @@ body {
     background: #fafafa;
     color: #333333;
     margin-top: 5rem;
-  }
+}
 
 h1, h2, h3, h4, h5, h6 {
     color: #333333;
-  }
+}
 
 ul {
     margin: 0;
-  }
+}
+
 
 a {
   background-color: lightgrey ;
@@ -27,6 +28,7 @@ a {
   float : left;
 }
 
+/* Box containing an Issue, responses to it and relevant buttons */
 .issue {
   margin: 30px;
   padding: 20px;
@@ -35,11 +37,13 @@ a {
   border-style: solid;
 }
 
+/* Show/Hide responses button */
 .visibility_toggle {
   border: none;
   background: none;
 }
 
+/* Box containing a response to an issue */
 .response {
   margin : 10px;
   padding: 5px;
@@ -48,14 +52,24 @@ a {
   border-style: solid;
 }
 
+/* Div that contains .response divs
+Hidden by default, which hides all its children too until button pressed */
 .response_container {
   display: none;
 }
 
+/* Button to open response form below */
 .issue_reply_button {
   display: inline-flex;
 }
 
+/* Used for reply form in view_queries and  staff_account
+Hidden by default, this is changed via JS when clicking a button*/
 .response_form {
   display: none;
+}
+
+/* Use for Return to Homepage button in thank_you.html */
+.thank_you_return {
+  margin: auto;
 }
