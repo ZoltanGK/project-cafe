@@ -168,7 +168,7 @@ def staff_account(request):
 
 
    
-def login(request):
+def doLogin(request):
     if request.method=="POST":
         # Checks to see if captcha was passed
         recaptcha_response = request.POST.get('g-recaptcha-response')
@@ -193,12 +193,12 @@ def login(request):
             elif Student.objects.filter(user = user):
                 return redirect('student_account')
             else:
-                return redirect('wait')
+                return redirect('index')
         else:
             # If the captcha is failed redirect back to login page
             # so the user can try again.
             messages.error(request,"Invalid Captcha Try Again")
-            return redirect('login')
+            return redirect('/doLogin')
     else:
         messages.error(request, 'Invalid reCAPTCHA. Please try again.')
         return redirect('login')
