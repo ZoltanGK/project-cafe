@@ -175,7 +175,7 @@ def get_context_dict_student(request):
     #               }
     user = request.user
     user_student = Student.objects.get(user=user)
-    issues = Issue.objects.filter(poster = user_student)
+    issues = Issue.objects.filter(poster = user_student).order_by('-date')
     context_dict = {}
     for issue in issues:
         categories = []
@@ -207,15 +207,11 @@ def get_context_dict_staff(request):
     user_staff = Staff.objects.get(user=user)
     #categories assigned to that user
     user_categories = user_staff.get_cats_resp()
-    issues = []
-    for category in user_categories:
-        # get all issues for that category
-        cat_issues = category.issues
-        # this is to prevent duplicates in the issues list
-        for cat_issue in cat_issues:
-            if cat_issue not in issues:
-                issues.append(cat_issue)
-        
+    issues = user_categories[0].issues
+    for cat in user_categories:
+        issues.union(cat.issues)
+    issues.order_by('-date')
+
     context_dict = {}
     for issue in issues:
         issue_poster = UserProfile.objects.get(user = issue.poster.user).name

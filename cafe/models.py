@@ -66,7 +66,7 @@ class Category(models.Model):
     
     @property
     def issues(self):
-        return [i for i in Issue.objects.filter(categories__id = self.id)]
+        return Issue.objects.filter(categories__id = self.id)
 
 # Issues and Responses
 class Issue(models.Model):
