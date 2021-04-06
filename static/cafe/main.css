@@ -85,11 +85,15 @@ a.thank_you_return {
 }
 
 /* Status text for issues */
-p.unresolved_issue {
+.issue_status {
+  /* Currently hidden as feature is WIP */
+  display: none;
+}
+.unresolved_issue {
   color: red;
   font-weight: bold;
 }
-p.resolved_issue {
+.resolved_issue {
   color: green;
   font-weight: bold;
 }
@@ -112,6 +116,7 @@ p.resolved_issue {
   display: inline-flex;
 }
 
+/* Login and Register buttons on homepage when not logged in */
 .homepage_link {
   float: right;
 }
