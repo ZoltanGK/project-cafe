@@ -246,46 +246,13 @@ def user_info_dict(request):
         
 #helper fn to get the context dict for student views
 def get_context_dict_student(request):
-    """
-    context_dict is a dictionary of all issues and replies of the format: 
-    {'issue id':{'title': title, 
-                  'date': date, 
-                  'anonymous': anonymous, 
-                  'poster': poster,
-                  'content': content 
-                  'categories' : categories,
-                  'num_categories' : len(categories),
-                  'status' : status,
-                  'responses':[{'number': number, 'date':date, 'content':content, 'poster': poster, 'anonymous': anonymous}]
-                  }
-    """
     user = request.user
     user_student = Student.objects.get(user=user)
     # Find all posts by user and order them by newest first
     # Date here is redundant as newer objects have higher IDs, but this should 
     # be helpful for futureproofing
     issues = Issue.objects.filter(poster = user_student).order_by('-date', '-id')
-    context_dict = {}
-    for issue in issues:
-        responses = []
-        num_categories = issue.categories.all().count()
-        for response in Response.objects.filter(issue = issue).order_by('number'):
-            response_poster = UserProfile.objects.get(user = response.poster.user).name
-            dict_response = {'number' : response.number, 'date': response.date, 
-                             'content': response.content, 'poster': response_poster,
-                             'anonymous': response.anonymous}
-            responses.append(dict(dict_response))
-        context_dict[issue.id] = { 
-                    'title': issue.title,
-                    'date': issue.date, 
-                    'anonymous': issue.anonymous, 
-                    'poster': UserProfile.objects.get(user = user).name,
-                    'content': issue.content,
-                    'categories' : issue.in_categories(),
-                    'num_categories' : num_categories,
-                    'status' : issue.status,
-                    'responses': responses
-                    }
+    context_dict = generate_context_dict(request, issues)
     return context_dict
  
 #helper fn to get the context dict for staff views 
@@ -300,7 +267,23 @@ def get_context_dict_staff(request):
     for cat in user_categories:
         issues = issues.union(cat.issues)
     issues.order_by('-date', '-id')
-
+    context_dict = generate_context_dict(request, issues)
+    return context_dict
+    
+def generate_context_dict(request, issues):
+    """
+    context_dict is a dictionary of all issues and replies of the format: 
+    {'issue id':{'title': title, 
+                  'date': date, 
+                  'anonymous': anonymous, 
+                  'poster': poster,
+                  'content': content 
+                  'categories' : categories,
+                  'num_categories' : len(categories),
+                  'status' : status,
+                  'responses':[{'number': number, 'date':date, 'content':content, 'poster': poster, 'anonymous': anonymous}]
+                  }
+    """
     context_dict = {}
     for issue in issues:
         issue_poster = UserProfile.objects.get(user = issue.poster.user).name
