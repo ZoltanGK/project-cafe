@@ -89,11 +89,11 @@ a.thank_you_return {
   /* Currently hidden as feature is WIP */
   display: none;
 }
-p.unresolved_issue {
+.unresolved_issue {
   color: red;
   font-weight: bold;
 }
-p.resolved_issue {
+.resolved_issue {
   color: green;
   font-weight: bold;
 }
