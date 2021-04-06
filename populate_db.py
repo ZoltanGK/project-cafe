@@ -14,7 +14,7 @@ def populate():
 
     users = {"jsmith": {"name": "Jane Smith", 
                         "email": "jsmith@example.gla.ac.uk",
-                        "staff": True, 
+                        "staff": False, 
                         "role": "Level 1 Tutor Representative",
                         "student": True,
                         "courses": "COMPSCI5059, COMPSCI5092",
