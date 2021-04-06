@@ -14,9 +14,9 @@ def populate():
 
     users = {"jsmith": {"name": "Jane Smith", 
                         "email": "jsmith@example.gla.ac.uk",
-                        "staff": False, 
+                        "staff": True, 
                         "role": "Level 1 Tutor Representative",
-                        "student": True,
+                        "student": False,
                         "courses": "COMPSCI5059, COMPSCI5092",
                         "lab_groups": ""},
              "jhw":     {"name": "John Williamson", 
@@ -67,44 +67,41 @@ def populate():
                "anonymous": True, 
                "status": 1, 
                "title": "Test Issue 1",
-               "content": "This is test issue 1. Status 1, Anonymous."},
+               "content": "This is test issue 1. Anonymous."},
               {"categories": ["Test Category", "Online Learning Feedback"], 
                "poster": "zgk", 
                "anonymous": False, 
                "status": 0, 
                "title": "Test Issue 2",
-               "content": "This is test issue 2. Status 0, Not Anonymous."}, 
+               "content": "This is test issue 2. Not Anonymous."}, 
               {"categories": ["CS1P Feedback", "Test Category"], 
                "poster": "ay", 
                "anonymous": True, 
                "status": 2, 
                "title": "Anonymous More Cooper",
-               "content": "CS1P needs more Cooper! - Anonymous. Should have status 2."}, 
+               "content": "CS1P needs more Cooper! - Anonymous."}, 
               {"categories": ["CS1P Feedback", "Test Category"], 
                "poster": "ay", 
                "anonymous": False, 
                "status": 0, 
                "title": "Named More Cooper",
-               "content": "CS1P needs more Cooper! - Anon Ymous. Should have status 0."}, 
+               "content": "CS1P needs more Cooper! - Anon Ymous."}, 
               {"categories": ["Online Learning Feedback"], 
                "poster": "zgk", 
                "anonymous": False, 
                "status": 0, 
-               "title": "Test Issue for Online Learning Feedback", 
-               "content": "This is a test issue that should only be seen by mef (and admin accs)."}, 
+               "title": "Ups and Downs", 
+               "content": "I think online learning has had both negative and positive aspects."}, 
               {"categories": ["General Tutor Feedback", "CS1P Feedback"], 
                "poster": "zgk", 
                "anonymous": False, 
                "status": 0, 
-               "title": "Test Issue with HTML/JS in it", 
-               "content": """I've really run out of ideas here, just adding content so that categories aren't empty.
-                             Please make sure this doesn't have display issues with all the writing. \n\n\t
-                             Also the following code should just be plain text. It should NOT actually work:
-                             <button type="button" onclick="document.getElementById('demo').style.fontSize='35px'">Click Me!</button>"""},]
+               "title": "CS1P Semester 1 Tutor feedback", 
+               "content": "While my tutor wasn't present much for CS1P, they were very helpful!"},]
 
     responses = [{"id": 3, "poster": "jhw", "content": "That depends on the [Cooper]ation of the animal involved."},
-                 {"id": 1, "poster": "jsmith", "content": "Thank you for test issue 1. This is reply 1."},
-                 {"id": 1, "poster": "jsmith", "content": "And also a 2nd reply."},]
+                 {"id": 3, "poster": "ay", "anonymous": True, "content": "Hahaha, naturally. Thank you!"},
+                 {"id": 1, "poster": "jsmith", "content": "Thank you for test issue 1. This is reply 1."},]
 
     print("\n--Creating Users--")
     for username, user_params in users.items():
@@ -131,7 +128,10 @@ def populate():
         i += 1
 
 def add_user(username, user_dict, pw = default_pw):
-    user = User.objects.create_user(username, user_dict["email"], pw)
+    user = User.objects.get_or_create(username = username)[0]
+    user.email = user_dict["email"]
+    user.password = pw
+    user.save()
     user_profile = UserProfile.objects.get_or_create(user=user)[0]
     user_profile.name = user_dict["name"]
     user_profile.email = user_dict["email"]
@@ -168,11 +168,12 @@ def add_issue(categories, poster, anonymous, status, title, content):
     issue.save()
     return issue
 
-def add_response(id, poster, content):
+def add_response(id, poster, content, anonymous = False):
     issue = Issue.objects.get(id = id)
     resp = Response.objects.get_or_create(issue = issue, content = content)[0]
     resp.issue = issue
     resp.poster = UserProfile.objects.get(user = User.objects.get(username = poster))
+    resp.anonymous = anonymous
     resp.save()
     return resp
 
