@@ -98,6 +98,18 @@ a.thank_you_return {
   font-weight: bold;
 }
 
+/* Categories: line under issues */
+.issue_categories {
+  /* Make this info more dense / take up less space */
+  margin: 0;
+}
+
+/* ID# under issues */
+.issue_id {
+  /* Making this info more dense / take up less space */
+  margin: 0;
+}
+
 /* Top bar buttons/links */
 .topbar_navigation_list {
   float: right;
