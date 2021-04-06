@@ -11,7 +11,7 @@ from datetime import date
 
 default_pw = "@dmin123"
 
-def populate():
+def populate(silent=False):
 
     users = {"jsmith": {"name": "Jane Smith", 
                         "email": "jsmith@example.gla.ac.uk",
@@ -104,29 +104,46 @@ def populate():
                  {"id": 3, "poster": "ay", "anonymous": True, "content": "Hahaha, naturally. Thank you!"},
                  {"id": 1, "poster": "jsmith", "content": "Thank you for test issue 1. This is reply 1."},]
 
-    print("\n--Creating Users--")
-    for username, user_params in users.items():
-        add_user(username, user_params)
-        print(f"Added: {username}")
+    if not silent:
+        print("\n--Creating Users--")
+        for username, user_params in users.items():
+            add_user(username, user_params)
+            print(f"Added: {username}")
 
-    print("\n--Creating Categories--")
-    for cat_name, cat_staff in categories.items():
-        add_category(cat_name, cat_staff)
-        print(f"Added: {cat_name}")
+        print("\n--Creating Categories--")
+        for cat_name, cat_staff in categories.items():
+            add_category(cat_name, cat_staff)
+            print(f"Added: {cat_name}")
 
-    print("\n--Creating Issues--")
-    i = 1
-    for issue_dict in issues:
-        add_issue(i, **issue_dict)
-        print(f"Added: Issue #{i}")
-        i += 1
+        print("\n--Creating Issues--")
+        i = 1
+        for issue_dict in issues:
+            add_issue(i, **issue_dict)
+            print(f"Added: Issue #{i}")
+            i += 1
 
-    print("\n--Creating Responses--")
-    i = 0
-    for resp_dict in responses:
-        add_response(**resp_dict)
-        print(f"Added: Response #{i} to Issue #{resp_dict['id']}")
-        i += 1
+        print("\n--Creating Responses--")
+        i = 0
+        for resp_dict in responses:
+            add_response(**resp_dict)
+            print(f"Added: Response #{i} to Issue #{resp_dict['id']}")
+            i += 1
+    else:
+        for username, user_params in users.items():
+            add_user(username, user_params)
+
+        for cat_name, cat_staff in categories.items():
+            add_category(cat_name, cat_staff)
+
+        i = 1
+        for issue_dict in issues:
+            add_issue(i, **issue_dict)
+            i += 1
+
+        i = 0
+        for resp_dict in responses:
+            add_response(**resp_dict)
+            i += 1
 
 def add_user(username, user_dict, pw = default_pw):
     user = User.objects.get_or_create(username = username)[0]
