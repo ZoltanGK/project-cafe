@@ -10,7 +10,14 @@
         <div class="issue">
         <h3><strong>{{fields.title}}</strong></h3>
         <h4>{{fields.date}}</h4>
-        ID#: {{issue_id}} <br/>
+        <p class = "issue_categories">
+        {% if fields.num_categories < 2 %}
+            Category: {{fields.categories}}
+        {% else %}
+            Categories: {{fields.categories}}
+        {% endif %}
+        </p>
+        <p class = "issue_id">ID#: {{issue_id}}</p>
         <div class = "issue_status">
         {% if fields.status == 0 %}
             Status: <p class="unresolved_issue">Unresolved</p>

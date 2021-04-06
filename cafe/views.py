@@ -241,8 +241,10 @@ def get_context_dict_student(request):
     for issue in issues:
         categories = []
         responses = []
+        num_categories = 0
         for category in issue.categories.all():
             categories.append(category.name)
+            num_categories += 1
         for response in Response.objects.filter(issue = issue).order_by('number'):
             response_poster = UserProfile.objects.get(user = response.poster.user).name
             dict_response = {'number' : response.number, 'date': response.date, 
@@ -256,6 +258,7 @@ def get_context_dict_student(request):
                     'poster': UserProfile.objects.get(user = user).name,
                     'content': issue.content,
                     'categories' : issue.in_categories(),
+                    'num_categories' : num_categories,
                     'status' : issue.status,
                     'responses': responses
                     }
@@ -278,8 +281,10 @@ def get_context_dict_staff(request):
         issue_poster = UserProfile.objects.get(user = issue.poster.user).name
         categories = []
         responses = []
+        num_categories = 0
         for category in issue.categories.all():
             categories.append(category.name)
+            num_categories += 1
         for response in Response.objects.filter(issue = issue).order_by('number'):
             response_poster = UserProfile.objects.get(user = response.poster.user).name
             dict_response = {'number' : response.number, 'date': response.date, 
@@ -293,6 +298,7 @@ def get_context_dict_staff(request):
                     'poster': issue_poster,
                     'content': issue.content,
                     'categories' : issue.in_categories(),
+                    'num_categories' : num_categories,
                     'status' : issue.status,
                     'responses': responses
                     }

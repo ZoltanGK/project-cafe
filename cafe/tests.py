@@ -6,9 +6,9 @@ from cafe.models import User, Staff
 import cafe.urls
 from populate_db import populate
 
-VIEW_NAMES = ["index", "contact_us", "register", "login", "unassigned_account",
+VIEW_NAMES = ["index", "contact", "register", "login", "wait",
         "student_account", "staff_account",
-        "view_queries", "create_response"]
+        "view_queries"]
 
 
 

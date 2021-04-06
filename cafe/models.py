@@ -88,7 +88,7 @@ class Issue(models.Model):
         category_names = []
         for cat in self.categories.all():
             category_names.append(cat.name)
-        return category_names
+        return ", ".join(category_names)
 
     @property
     def responses(self):
