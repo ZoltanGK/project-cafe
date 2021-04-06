@@ -4,7 +4,7 @@ from django.urls.exceptions import NoReverseMatch
 from django.test import TestCase
 from cafe.models import User, Permission, Category, Staff, Student
 import cafe.urls
-from populate_db import populate
+from population_script import populate
 
 VIEW_NAMES = ["index", "contact", "register", "login", "wait",
         "student_account", "staff_account",
