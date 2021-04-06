@@ -115,9 +115,9 @@ def populate():
         print(f"Added: {cat_name}")
 
     print("\n--Creating Issues--")
-    i = 0
+    i = 1
     for issue_dict in issues:
-        add_issue(**issue_dict)
+        add_issue(i, **issue_dict)
         print(f"Added: Issue #{i}")
         i += 1
 
@@ -157,8 +157,8 @@ def add_category(name, resp_staff):
         user.save()
     return cat
 
-def add_issue(categories, poster, anonymous, status, title, content):
-    issue = Issue.objects.get_or_create(content = content)[0]
+def add_issue(id, categories, poster, anonymous, status, title, content):
+    issue = Issue.objects.get_or_create(id = id)[0]
     for cat in categories:
         c = Category.objects.get(name=cat)
         issue.categories.add(c)
@@ -166,6 +166,7 @@ def add_issue(categories, poster, anonymous, status, title, content):
     issue.anonymous = anonymous
     issue.status = status
     issue.title = title
+    issue.content = content
     issue.save()
     return issue
 
