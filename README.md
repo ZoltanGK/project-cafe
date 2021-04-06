@@ -18,5 +18,6 @@ The objective of our application is to provide the University of Glasgow Computi
 - [Pillow](https://python-pillow.org/) \[Version 6.2.1\]
 
 ### Bibliography
+- [Django 2.2 Documentation](https://docs.djangoproject.com/en/2.2/)
 - [Tango with Django](https://www.tangowithdjango.com/)
 - [w3schools.com](https://www.w3schools.com/)
