@@ -16,8 +16,8 @@
 </head>
 <body>
 	<div>
-		<p><img style="float : left; margin-left : 80px;" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" />
-		   <img style="float : right; margin-right : 80px;" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" /></p> 
+		<p><img id="logo_left" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" />
+		   <img id="logo_right" src="{% static 'images/logo.png' %}" width = 50  alt = "UofG Logo" /></p> 
 		<p><h1 style = "text-align: center;">Central Anonymous Feedback Environment</h1>
 			<h3 style = "text-align: center;">(CAFE)</h3></h></p>
 		{% if request.user.is_authenticated %}
@@ -30,14 +30,14 @@
 					Logged in as {{ user_info.name }}
 				{% endif %}
 			</p><br/><br/>
-			<ul style = "float: right; margin-right: 40px ; list-style : none; display:inline-flex;">
+			<ul class = "topbar_navigation_list">
 			{% if user_info.is_student %}
-				<li><div class="link" style= "text-align: right; float: right">
+				<li><div class="link topbar_navigation">
 					<a href="{% url 'student_account' %}">Post a query</a></li>
-				<li><div class="link" style= "text-align: right; float: right">
+				<li><div class="link topbar_navigation">
 					<a href="{% url 'view_queries' %}">Previous queries</a></li>
 			{% elif user_info.is_staff %}
-				<li><div class="link" style= "text-align: right; float: right">
+				<li><div class="link topbar_navigation">
 					<a href="{% url 'staff_account' %}">Received queries</a></li>
 			{% endif %}
 			<li><a href="{% url 'logout_screen' %}">Logout</a></li>
@@ -52,8 +52,8 @@
 	<br/>
 	<hr/>
 	<div>
-		<p style ='margin-left : 80px'>Site created by Group 13B</p>
-		<ul style = "margin : auto ; list-style : none; display:inline-flex;">
+		<p id = "made_by_signature">Site created by Group 13B</p>
+		<ul class = "bottom_navigation_list">
 			<li><a href ="{% url 'contact' %}">Contact Us</a></li>
 			<li><a href="{% url 'index' %}">To Homepage</a></li> 
 		</ul>

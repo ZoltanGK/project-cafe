@@ -7,7 +7,7 @@
 
 {% block body_block %}
 
-<h2 style="text-decoration: underline;">Post an Issue</h2>
+<h2 class = "form_title">Post an Issue</h2>
 <form id="issue_form" method="post" action="{% url 'student_account' %}">
     {% csrf_token %}
     {{ form|crispy }}

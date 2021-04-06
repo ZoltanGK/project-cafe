@@ -29,7 +29,7 @@ a {
 }
 
 /* Box containing an Issue, responses to it and relevant buttons */
-.issue {
+div.issue {
   margin: 30px;
   padding: 20px;
   border-width: 2px;
@@ -38,13 +38,13 @@ a {
 }
 
 /* Show/Hide responses button */
-.visibility_toggle {
+button.visibility_toggle {
   border: none;
   background: none;
 }
 
 /* Box containing a response to an issue */
-.response {
+div.response {
   margin : 10px;
   padding: 5px;
   border-width: 2px;
@@ -54,12 +54,12 @@ a {
 
 /* Div that contains .response divs
 Hidden by default, which hides all its children too until button pressed */
-.response_container {
+div.response_container {
   display: none;
 }
 
 /* Button to open response form below */
-.issue_reply_button {
+button.issue_reply_button {
   display: inline-flex;
 }
 
@@ -69,7 +69,64 @@ Hidden by default, this is changed via JS when clicking a button*/
   display: none;
 }
 
-/* Use for Return to Homepage button in thank_you.html */
-.thank_you_return {
+/* Use for Return to Homepage button in *thank_you.html */
+a.thank_you_return {
   margin: auto;
+}
+
+/* Use for "Post an Issue" title in student_account */
+.form_title {
+  text-decoration: underline;
+}
+
+/* Used for the titles of issues */
+.issue_title {
+  font-weight: bold;
+}
+
+/* Status text for issues */
+p.unresolved_issue {
+  color: red;
+  font-weight: bold;
+}
+p.resolved_issue {
+  color: green;
+  font-weight: bold;
+}
+
+/* Top bar buttons/links */
+.topbar_navigation_list {
+  float: right;
+  margin-right: 40px;
+  list-style: none;
+  display: inline-flex;
+}
+/* Not currently used, but reminder that it exists
+.topbar_navigation
+*/
+
+/* Page bottom buttons/links */
+.bottom_navigation_list {
+  margin: auto;
+  list-style: none;
+  display: inline-flex;
+}
+
+.homepage_link {
+  float: right;
+}
+
+/* Logos on top bar */
+#logo_left {
+  float: left;
+  margin-left: 80px;
+}
+#logo_right {
+  float: right;
+  margin-right: 80px;
+}
+
+/* Site created by... text */
+#made_by_signature {
+  margin-left : 80px
 }
