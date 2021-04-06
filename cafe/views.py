@@ -316,9 +316,8 @@ def get_user_type(request):
 #helper fn to redirect a user from a page they are not authorised to access (such as staff accessing a student view)
 def redirect_to_correct_page(user_type):
     if user_type == "Staff":
-        print("redirecting")
-        return redirect('/login/staff-account/')
+        return redirect('staff_account')
     elif user_type == "Student":
-        return redirect('/login/student-account/')
+        return redirect('student_account')
     else:
-        return redirect('/wait')
+        return redirect('wait')
