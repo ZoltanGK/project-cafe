@@ -1,4 +1,4 @@
-# Centralised Anonymous Feedback Environment (CAFE)
+# Central Anonymous Feedback Environment (CAFE)
 
 ## Description
 
