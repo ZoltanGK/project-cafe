@@ -23,7 +23,6 @@ def wait(request):
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
-        print(form.is_valid())
         if form.is_valid():
             # Checks to see if captcha was passed
             recaptcha_response = request.POST.get('g-recaptcha-response')
@@ -116,7 +115,6 @@ def view_queries(request):
         else:
             print(form.errors)
     context_dict = get_context_dict_student(request)
-    print(context_dict)
     return render(request, 'cafe/view_queries.html', context = {'issue' : context_dict, 'form' : form ,'user_info': user_info_dict(request)})
     
 @login_required
@@ -235,7 +233,6 @@ def get_context_dict_staff(request):
                     'status' : issue.status,
                     'responses': responses
                     }
-    print(context_dict)
     return context_dict
 
 def login(request):
