@@ -5,6 +5,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE",
 import django
 django.setup()
 from django.contrib.auth.models import User, Permission
+from django.contrib.auth.hashers import make_password
 from cafe.models import Category, UserProfile, Staff, Student, Issue, Response, Contact
 from datetime import date
 
@@ -130,7 +131,7 @@ def populate():
 def add_user(username, user_dict, pw = default_pw):
     user = User.objects.get_or_create(username = username)[0]
     user.email = user_dict["email"]
-    user.password = pw
+    user.password = make_password(pw)
     user.save()
     user_profile = UserProfile.objects.get_or_create(user=user)[0]
     user_profile.name = user_dict["name"]
