@@ -26,6 +26,8 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
+            # Garg, A (2020) Add reCAPTCHA In Your Django App 
+            # [Source code]. https://studygyaan.com/django/add-recaptcha-in-your-django-app-increase-security
             # Checks to see if captcha was passed
             recaptcha_response = request.POST.get('g-recaptcha-response')
             url = 'https://www.google.com/recaptcha/api/siteverify'
